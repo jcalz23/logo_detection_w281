@@ -5,21 +5,39 @@ import os
 import math
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
-# read grayscale image with intensity range between 0-1
-def read_image(in_path):
-
-    img = plt.imread(in_path)
+def overlay_bboxes(img_file, img_bbox_file):
+    '''Take image and bbox info from roboflow, overlay bbox rectangle on image'''
     
-    # floating point image with intensity [0, 1]
-    if np.max(img) > 1:
-        img = img.astype(np.float32) / 255.0
-    
-    # convert to grayscale
-    if len(img.shape) > 2:
-        img = img[:, :, 2].copy()
-        
-    return img
+    # Read image, get shape
+    im_gray = cv2.imread(img_file, cv2.IMREAD_GRAYSCALE)
+    y_shape, x_shape = im_gray.shape[:2]
+    im_bboxes = im_gray.copy()
 
+    # Read bbox info, format into cv2 format (needs corner coords)
+    with open(img_bbox_file) as f:
+        rf_output = f.readlines()
+
+    # unpack, format each box from roboflow output to cv2 corner coords
+    bboxes = []
+    for box in rf_output:
+        # unpack, format roboflow line
+        box = box.replace('\n', '')
+        box = box.split(' ')
+        box = list(map(float, box)) #convert all to floats
+        label, mid_x_p, mid_y_p, w_box, h_box = box
+
+        # convert to box corners
+        middle_x = int(x_shape*mid_x_p)
+        middle_y = int(y_shape*mid_y_p)
+        l_x = middle_x - int(x_shape*w_box/2)
+        r_x = middle_x + int(x_shape*w_box/2)
+        b_y = middle_y + int(y_shape*h_box/2)
+        t_y = middle_y - int(y_shape*h_box/2)
+        draw_rect = cv2.rectangle(im_bboxes, (l_x, t_y), (r_x, b_y), (0,0,255), 2)
+        bboxes.append([l_x, r_x, t_y, b_y]) # save out the bbox corners
+    
+    return im_gray, im_bboxes, bboxes, label
+    
 
 # input a grayscale image and draw keypoints
 def drawKeyPts(grayImage, keyp):
@@ -40,7 +58,7 @@ def drawKeyPts(grayImage, keyp):
     
 
 # compute the key points from input grayscale images
-def HarrisKeypointDetector(in_image, n=2, w=3, k=0.04, verbose=True):
+def HarrisKeypointDetector(in_image, n=2, w=3, k=0.04, p=0.9, verbose=True):
     
     # STEP 1:
     # compute the points where there are good corners in the image
@@ -57,7 +75,7 @@ def HarrisKeypointDetector(in_image, n=2, w=3, k=0.04, verbose=True):
     
     # STEP 2:
     # threshold the scores to keep only interesting features
-    thresh = 0.1 * harrisImage.max()
+    thresh = (1-p) * harrisImage.max()
     harrisMaxImage = harrisImage > thresh
     
     # STEP 3:
@@ -114,41 +132,41 @@ def SimpleFeatureDescriptor(grayImage, keypoints, w=5):
 
 
 # more robust feature descriptor using ORB, SIFT
-def ORBFeatureDescriptor(grayImage, harris_kp, use_harris=True, nfeatures=10):
-    orb = cv2.ORB_create(nfeatures, edgeThreshold=2) # edgeThresh tells orb not to look within x pixels of border
-    if use_harris:
-        kp, des = orb.compute(grayImage, harris_kp) # use harris corners
+def ORB_SIFT_FeatureDescriptor(grayImage, use_orb = True, use_harris=True, nfeatures=10, harris_kp=None):
+    # select which feature descriptor method: orb or sift
+    if use_orb:
+        mod = cv2.ORB_create(nfeatures, edgeThreshold=2) # edgeThresh tells orb not to look within x pixels of border
     else:
-        kp, des = orb.detectandcompute(grayImage, None) # or use orb keypoints
+        mod = cv2.SIFT_create(nfeatures, edgeThreshold=2)
+    
+    # select keypoint generator: harris or ORB/SIFT
+    if use_harris:
+        kp = harris_kp
+    else:
+        kp = mod.detect(grayImage,None)
+    
+    # derive feature descriptor
+    kp, des = mod.compute(grayImage, kp) # or use orb keypoints
+
     return des
 
 
-def SIFTFeatureDescriptor(grayImage, harris_kp, use_harris=True, nfeatures=10):
-    orb = cv2.SIFT_create(nfeatures, edgeThreshold=2)
-    if use_harris:
-        kp, des = orb.compute(grayImage, harris_kp) # use harris corners
-    else:
-        kp, des = orb.detectandcompute(grayImage, None) # or use orb keypoints
-    return des
 
 
-
-
-
-# match the input feature descriptors using a simple brute force search
-def feature_matching(desc1, desc2):
+# # match the input feature descriptors using a simple brute force search
+# def feature_matching(desc1, desc2):
     
-    # BFMatcher with default params
-    bf = cv2.BFMatcher()
-    matches = bf.knnMatch(desc1, desc2, k=2)
+#     # BFMatcher with default params
+#     bf = cv2.BFMatcher()
+#     matches = bf.knnMatch(desc1, desc2, k=2)
 
-    # store all the good matches as per Lowe's ratio test.
-    good = []
-    for m,n in matches:
-        if m.distance < 0.7*n.distance:
-            good.append(m)
+#     # store all the good matches as per Lowe's ratio test.
+#     good = []
+#     for m,n in matches:
+#         if m.distance < 0.7*n.distance:
+#             good.append(m)
     
-    return good
+#     return good
 
 
 
