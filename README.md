@@ -117,7 +117,7 @@ Here is a random GIF as a placeholder.
 <!-- [(Back to top)](#table-of-contents) --> 
 
 
-See [[1]](#1) reference
+See [[1]](#1) and [[2]](#2) reference
 
 <!-- *You might have noticed the **Back to top** button(if not, please notice, it's right there!). This is a good idea because it makes your README **easy to navigate.*** 
 
@@ -176,15 +176,32 @@ Ideally, you should keep the README simple. If you need to add more complex expl
 
 
 <a id="1">[1]</a> 
-Simone Bianco and Marco Buzzelli, Davide Mazzini and  Raimondo Schettini
-Deep Learning for Logo Recognition
+Simone Bianco, Marco Buzzelli, Davide Mazzini and  Raimondo Schettini (2017).
+Deep Learning for Logo Recognition. Neurocomputing.
+https://doi.org/10.1016/j.neucom.2017.03.051
+
+
+<a id="2">[2]</a> 
+Choras, Ryszard S.. (2007). Image feature extraction techniques and their applications for CBIR and biometrics systems. 
+International Journal of Biology and Biomedical Engineering.  
+https://www.researchgate.net/publication/228711889_Image_feature_extraction_techniques_and_their_applications_for_CBIR_and_biometrics_systems
+
+<a id="3">[3]</a> 
+Stefan Romberg and Rainer Lienhart. 2013. Bundle min-hashing for logo recognition. In Proceedings of the 3rd ACM conference on International conference on multimedia retrieval (ICMR '13). Association for Computing Machinery, New York, NY, USA, 113–120. https://doi.org/10.1145/2461466.2461486
+
+<a id="4">[4]</a> 
+C. Li, I. Fehérvári, X. Zhao, I. Macedo and S. Appalaraju, "SeeTek: Very Large-Scale Open-set Logo Recognition with Text-Aware Metric Learning," 2022 IEEE/CVF Winter Conference on Applications of Computer Vision (WACV), 2022, pp. 587-596, doi: 10.1109/WACV51458.2022.00066. https://ieeexplore.ieee.org/document/9706752
+
+
+<a id="5">[5]</a> 
+H. Su, S. Gong and X. Zhu, "WebLogo-2M: Scalable Logo Detection by Deep Learning from the Web," 2017 IEEE International Conference on Computer Vision Workshops (ICCVW), 2017, pp. 270-279, doi: 10.1109/ICCVW.2017.41. https://ieeexplore.ieee.org/abstract/document/8265251
+
+<a id="6">[6]</a> 
+Hou, S., Li, J., Min, W., Hou, Q., Zhao, Y., Zheng, Y., & Jiang, S. (2022). Deep Learning for Logo Detection: A Survey. ArXiv, abs/2210.04399. https://arxiv.org/abs/2210.04399
 
 
 <!-- <div id="refs"></div> -->
 
-<div id="refs" class="references csl-bib-body hanging-indent">
-
-<div id="ref-bianco_2021" class="csl-entry">
 
 <!--# Contribute
 [(Back to top)](#table-of-contents)-->
