@@ -1,4 +1,11 @@
-
+---
+title : "Logo Detection"
+output:   
+    md_document:
+        variant: markdown_github
+bibliography: "references.bib"
+#nocite: '@*'
+---
 
 <!-- Add banner here -->
 
@@ -58,16 +65,18 @@ I use [**Shields IO**](https://shields.io/) for making badges. It is a simple an
 
 Here is a sample TOC(*wow! such cool!*) that is actually the TOC for this README. -->
 
-1. [Overview](#Overview) 
-2. [Related work](#related-work)
-3. [Dataset](#dataset)
-4. [Methods](#methods)
-    -  [Data Preprocessing](#data-preprocessing)
-    - [General Feature Extraction](#general-feature-extraction)
-    - [SIFT](#sift)
-    - [YOLO](#yolo)
-5. [Results and Discussion](#results-and-discussion)
-6. [References](#references)
+- [W281 - Final Project : Logo Detection](#w281---final-project--logo-detection)
+- [Table of contents](#table-of-contents)
+- [Overview](#overview)
+- [Related work](#related-work)
+- [Dataset](#dataset)
+- [Methods](#methods)
+  - [Data Preprocessing](#data-preprocessing)
+  - [General Feature Extraction](#general-feature-extraction)
+  - [SIFT](#sift)
+  - [YOLO](#yolo)
+- [Results and Discussion](#results-and-discussion)
+- [References](#references)
 
 <!-- - [Usage](#usage)
 <!-- - [Dataset](#dataset)
@@ -107,6 +116,8 @@ Here is a random GIF as a placeholder.
 # Related work
 <!-- [(Back to top)](#table-of-contents) --> 
 
+
+See [[1]](#1) reference
 
 <!-- *You might have noticed the **Back to top** button(if not, please notice, it's right there!). This is a good idea because it makes your README **easy to navigate.*** 
 
@@ -149,6 +160,8 @@ Ideally, you should keep the README simple. If you need to add more complex expl
 ## Data Preprocessing
 
 
+
+
 ## General Feature Extraction 
 
 ## SIFT
@@ -161,6 +174,17 @@ Ideally, you should keep the README simple. If you need to add more complex expl
 
 # References 
 
+
+<a id="1">[1]</a> 
+Simone Bianco and Marco Buzzelli, Davide Mazzini and  Raimondo Schettini
+Deep Learning for Logo Recognition
+
+
+<!-- <div id="refs"></div> -->
+
+<div id="refs" class="references csl-bib-body hanging-indent">
+
+<div id="ref-bianco_2021" class="csl-entry">
 
 <!--# Contribute
 [(Back to top)](#table-of-contents)-->
