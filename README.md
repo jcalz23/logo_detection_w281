@@ -71,7 +71,7 @@ Here is a sample TOC(*wow! such cool!*) that is actually the TOC for this README
 - [Related work](#related-work)
 - [Dataset](#dataset)
 - [Methods](#methods)
-  - [Data Preprocessing](#data-preprocessing)
+  - [Image Preprocessing](#image-preprocessing)
   - [General Feature Extraction](#general-feature-extraction)
   - [SIFT](#sift)
   - [YOLO](#yolo)
@@ -139,10 +139,19 @@ A method I use is after completing the README, I go through the instructions fro
 
 <!-- Here is a sample instruction:-->
 
-
+@@@Discuss YOLO@@@
 
 
 # Dataset
+
+[Logos-32plus](http://www.ivl.disco.unimib.it/activities/logo-recognition/) is a collection of 12,312 real-world photos that contain 32 different logo classes. It is an expansion on the the FlickrLogos-32 dataset, designed to be more representative of the various conditions that logos appear in and more suitable for training keypoint-based approaches to logo recognition. To construct this dataset, images were scraped from Flickr and Google Images through a text-based search on image tags. Scraped images were manually filtered to remove unfocused, blurred, noisy, or duplicate images [1].
+
+We selected 10 logo classes from the 32 in Logos-32plus to use as the total dataset for training and evaluation. Eace image in this dataset is labeled with a single class, and the 10 classes each contain 300 photos on average. Bounding box annotations are provided for each occurrence of a logo in an image; photos may have one or multiple instances of the logo corresponding to the labeled class. In cases where an image contains logos belonging to multiple classes, only logos corresponding to the image class are annotated. The counts of images and bounding boxes per class are shown in Fig. 1. 
+
+![alt text](https://github.com/jcalz23/logo_detection_w281/blob/main/images/class_counts.png?raw=true)
+
+**Fig. 1.** Counts of images and individual logo bounding boxes for each class. Note that bounding box counts are significantly larger than image counts due to images containing multiple occurrences of a logo.
+
 
 We decided to use [Logos-32plus dataset](https://drive.google.com/drive/folders/0B7jaG1vRBvyfQWhJc3ZRZE5OZjg?resourcekey=0-PQxyqOLOzBhtnQ7huspHgA) which is an expanded version of [FlickrLogos-32 dataset](https://www.uni-augsburg.de/en/fakultaet/fai/informatik/prof/mmc/research/datensatze/flickrlogos/). Both has the same classes of objects but Logos-32plus has substantially more images.
 
@@ -169,12 +178,18 @@ You could also give specific instructions to how they can setup their developmen
 
 Ideally, you should keep the README simple. If you need to add more complex explanations, use a wiki. Check out [this wiki](https://github.com/navendu-pottekkat/nsfw-filter/wiki) for inspiration. -->
 
+Non-deep learning approaches to logo prediction typically involve two steps. The first step is logo localization, which identifies potential locations in an image where a logo may be present. This can be solved by using a correlation tracker to detect image regions that have high correlation with a mask image. Multiple mask images are produced from each logo via affine transformation, rotation, and resizing. Regions that produce a sufficiently high correlation with any mask image are annotated with a bounding box and the class of the mask image. The second step is logo classification, which uses a feature-based model to perform image recognition on the bounding boxes produced by the logo localization step. Since the Logos-32plus dataset provides ground truth bounding boxes for all images, this project assumes a strongly-labeled dataset as input and focuses only on the logo classification problem.
+
+The YOLO deep learning model takes weakly-labeled images as input, while our classification system takes labeled bounding boxes as input and performs data augmentation. The train-validation-test split is applied at the image level before preprocessing to ensure that all training images produced by data augmentation are generated from the training images seen by YOLO; similarly for validation and test. We apply a 70-15-15 train-validation-test split in order to maximize the size of the validation and test sets and increase the generalization and robustness of model evaluation metrics. The impact of the reduced training set size is negligible due to the significant data augmentation performed.
 
 
+## Image Preprocessing
 
-## Data Preprocessing
+Using the ground truth bounding boxes provided by the Logos-32plus dataset, all bounding boxes are extracted from each image. Each bounding box is now considered a unique logo image that belongs to the same class and data split as the source image. Image contrast normalization is performed on by applying the Contrast Limited Adaptive Histogram Equalization (CLAHE) algorithm with 4x4 tile size to the luminance channel of each image. Example output of this step is shown in Fig. 2.
 
+![alt text](https://github.com/jcalz23/logo_detection_w281/blob/main/images/adidas_clahe.png?raw=true)
 
+**Fig. 2.** Data augmentation generates additional training examples from a single image by applying random 3D rotation transformations and color inversions. Class balancing is enforced by adjusting the number of generated images such that the final image counts are uniform. The total number of images after data augmentation is abcdefg.
 
 
 ## General Feature Extraction 
@@ -191,7 +206,7 @@ Ideally, you should keep the README simple. If you need to add more complex expl
 
 
 <a id="1">[1]</a> 
-Simone Bianco, Marco Buzzelli, Davide Mazzini and  Raimondo Schettini (2017).
+Simone Bianco, Marco Buzzelli, Davide Mazzini and Raimondo Schettini (2017).
 Deep Learning for Logo Recognition. Neurocomputing.
 https://doi.org/10.1016/j.neucom.2017.03.051
 
