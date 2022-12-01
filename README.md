@@ -160,11 +160,12 @@ A method I use is after completing the README, I go through the instructions fro
 
 # Dataset
 
-![Logos-32plus](http://www.ivl.disco.unimib.it/activities/logo-recognition/) is a collection of 12,312 real-world photos that contain 32 different logo classes. It is an expansion on the the FlickrLogos-32 dataset, designed to be more representative of the various conditions that logos appear in and more suitable for training keypoint-based approaches to logo recognition. To construct this dataset, images were scraped from Flickr and Google Images through a text-based search on image tags. Scraped images were manually filtered to remove unfocused, blurred, noisy, or duplicate images [1].
+[Logos-32plus](http://www.ivl.disco.unimib.it/activities/logo-recognition/) is a collection of 12,312 real-world photos that contain 32 different logo classes. It is an expansion on the the FlickrLogos-32 dataset, designed to be more representative of the various conditions that logos appear in and more suitable for training keypoint-based approaches to logo recognition. To construct this dataset, images were scraped from Flickr and Google Images through a text-based search on image tags. Scraped images were manually filtered to remove unfocused, blurred, noisy, or duplicate images [1].
 
 We selected 10 logo classes from the 32 in Logos-32plus to use as the total dataset for training and evaluation. Each image in this dataset is labeled with a single class, and the 10 classes each contain 300 photos on average. Bounding box annotations are provided for each occurrence of a logo in an image; photos may have one or multiple instances of the logo corresponding to the labeled class. In cases where an image contains logos belonging to multiple classes, only logos corresponding to the image class are annotated. The counts of images and bounding boxes per class are shown in Fig. 1. 
 
 ![alt text](https://github.com/jcalz23/logo_detection_w281/blob/main/images/class_counts.png?raw=true)
+
 **Fig. 1.** Counts of images and individual logo bounding boxes for each class. Note that bounding box counts are significantly larger than image counts due to images containing multiple occurrences of a logo.
 
 <!-- [(Back to top)](#table-of-contents)  --> 
@@ -196,6 +197,7 @@ The YOLO deep learning model takes weakly-labeled images as input, while our cla
 Using the ground truth bounding boxes provided by the Logos-32plus dataset, all bounding boxes are extracted from each image. Each bounding box is now considered a unique logo image that belongs to the same class and data split as the source image. Image contrast normalization is performed on by applying the Contrast Limited Adaptive Histogram Equalization (CLAHE) algorithm with 4x4 tile size to the luminance channel of each image. Example output of this step is shown in Fig. 2.
 
 ![alt text](https://github.com/jcalz23/logo_detection_w281/blob/main/images/adidas_clahe.png?raw=true)
+
 **Fig. 2.** 
 
 Data augmentation generates additional training examples from a single image by applying random 3D rotation transformations and color inversions. Class balancing is enforced by adjusting the number of generated images such that the final image counts are uniform. The total number of images after data augmentation is abcdefg.
