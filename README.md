@@ -148,11 +148,16 @@ A method I use is after completing the README, I go through the instructions fro
 
 [Logos-32plus](http://www.ivl.disco.unimib.it/activities/logo-recognition/) is a collection of 12,312 real-world photos that contain 32 different logo classes. It is an expansion on the the [FlickrLogos-32 dataset](https://www.uni-augsburg.de/en/fakultaet/fai/informatik/prof/mmc/research/datensatze/flickrlogos/).  Both has the same classes of objects but Logos-32plus has substantially more images.  Logos-32plus is designed to be more representative of the various conditions that logos appear in and more suitable for training keypoint-based approaches to logo recognition. To construct this dataset, images were scraped from Flickr and Google Images through a text-based search on image tags.  To increase variability in the data distribution, different queries were put together by concatenating a noun plus the logo name (i.e. "merchandising Becks", "can Becks", "drink Becks"). Scraped images were manually filtered to remove unfocused, blurred, noisy, or duplicate images [1].
 
-We selected 10 logo classes from the 32 in Logos-32plus to use as the total dataset for training and evaluation. Eace image in this dataset is labeled with a single class, and the 10 classes each contain 300 photos on average. Bounding box annotations are provided for each occurrence of a logo in an image; photos may have one or multiple instances of the logo corresponding to the labeled class. In cases where an image contains logos belonging to multiple classes, only logos corresponding to the image class are annotated. The counts of images and bounding boxes per class are shown in Fig. 1. 
+We selected 10 logo classes from the 32 in Logos-32plus to use as the total dataset for training and evaluation. Eace image in this dataset is labeled with a single class, and the 10 classes each contain 300 photos on average. Bounding box annotations are provided for each occurrence of a logo in an image; photos may have one or multiple instances of the logo corresponding to the labeled class. In cases where an image contains logos belonging to multiple classes, only logos corresponding to the image class are annotated. The distribution of images and bounding boxes per class are shown in Fig. 1. Note that bounding box counts are significantly larger than image counts due to images containing multiple occurrences of a logo.
 
-![alt text](https://github.com/jcalz23/logo_detection_w281/blob/main/images/class_counts.png?raw=true)
 
-**Fig. 1.** Counts of images and individual logo bounding boxes for each class. Note that bounding box counts are significantly larger than image counts due to images containing multiple occurrences of a logo.
+<p align = "center">
+<img src = "./images/class_counts.png" >
+</p>
+<p align = "center">
+Fig.1 - Distribution of logo images and bounding boxes per class
+
+</p>
 
 
 
@@ -182,11 +187,16 @@ The YOLO deep learning model takes weakly-labeled images as input, while our cla
 
 ## Image Preprocessing
 
-Using the ground truth bounding boxes provided by the Logos-32plus dataset, all bounding boxes are extracted from each image. Each bounding box is now considered a unique logo image that belongs to the same class and data split as the source image. Image contrast normalization is performed on by applying the Contrast Limited Adaptive Histogram Equalization (CLAHE) algorithm with 4x4 tile size to the luminance channel of each image. Example output of this step is shown in Fig. 2.
+Using the ground truth bounding boxes provided by the Logos-32plus dataset, all bounding boxes are extracted from each image. Each bounding box is now considered a unique logo image that belongs to the same class and data split as the source image. Image contrast normalization is performed on by applying the Contrast Limited Adaptive Histogram Equalization (CLAHE) algorithm with 4x4 tile size to the luminance channel of each image. Example output of this step is shown in Fig. 2. Data augmentation generates additional training examples from a single image by applying random 3D rotation transformations and color inversions. Class balancing is enforced by adjusting the number of generated images such that the final image counts are uniform. The total number of images after data augmentation is abcdefg.
 
-![alt text](https://github.com/jcalz23/logo_detection_w281/blob/main/images/adidas_clahe.png?raw=true)
 
-**Fig. 2.** Data augmentation generates additional training examples from a single image by applying random 3D rotation transformations and color inversions. Class balancing is enforced by adjusting the number of generated images such that the final image counts are uniform. The total number of images after data augmentation is abcdefg.
+<p align = "center">
+<img src = "./images/adidas_clahe.png" >
+</p>
+<p align = "center">
+Fig.2 - Data Augmentation Example using Adidas image
+</p>
+
 
 
 ## General Feature Extraction 
@@ -194,6 +204,13 @@ Using the ground truth bounding boxes provided by the Logos-32plus dataset, all 
 ## SIFT
 
 To implement this method, we first need to represent a vocabulary of visual words using SIFT.  SIFT or Scale Invariant Feature Transform is a feature detection algorithm in Computer Vision.  SIFT locates features in an image, known as "keypoints".  Keypoints are scale, noise, illumination and rotation invariant.  Another important characteristic is that the relative position between the features should not change from one image to another.  Then, a vocabulary is formed by sampling local features (or keypoints) from the training set and clustering them using Kmeans.  This process partitions 128 dimensional SIFT features space into N number of regions and allow us to create histograms of visual words.
+
+<p align = "center">
+<img src = "./images/sift_bagofwords.png" width="600" height="500">
+</p>
+<p align = "center">
+Fig.1 - Bag of Words SIFT diagram from https://heraqi.blogspot.com/2017/03/BoW.html
+</p>
 
 
 ## YOLO
