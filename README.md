@@ -124,6 +124,8 @@ Here is a random GIF as a placeholder.
 # Related work
 <!-- [(Back to top)](#table-of-contents) --> 
 
+In general, logo recognition has used keypoint-based detectors and descriptions such as Bag of quantized SIFT features (BofW SIFT) [[1]](#1).  BofW SIFT is a method in which a histogram of visual words by bucketing SIFT keypoints using Kmeans clustering algorithm.   After this, 1-vs-all linear SVMs is used as classifier for logo recognition.  
+Further, Romberg and Lienhart [[3]](#3) use a feature bundling technique where individual local features are aggregated with features with their spatial neighborhood into bundles.  In Romberg et al 
 
 See [[1]](#1) and [[2]](#2) reference
 
@@ -190,6 +192,9 @@ Using the ground truth bounding boxes provided by the Logos-32plus dataset, all 
 ## General Feature Extraction 
 
 ## SIFT
+
+To implement this method, we first need to represent a vocabulary of visual words using SIFT.  SIFT or Scale Invariant Feature Transform is a feature detection algorithm in Computer Vision.  SIFT locates features in an image, known as "keypoints".  Keypoints are scale, noise, illumination and rotation invariant.  Another important characteristic is that the relative position between the features should not change from one image to another.  Then, a vocabulary is formed by sampling local features (or keypoints) from the training set and clustering them using Kmeans.  This process partitions 128 dimensional SIFT features space into N number of regions and allow us to create histograms of visual words.
+
 
 ## YOLO
 
