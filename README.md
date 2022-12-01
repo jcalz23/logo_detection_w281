@@ -144,7 +144,12 @@ A method I use is after completing the README, I go through the instructions fro
 
 # Dataset
 
-We decided to use [Logos-32plus dataset](https://drive.google.com/drive/folders/0B7jaG1vRBvyfQWhJc3ZRZE5OZjg?resourcekey=0-PQxyqOLOzBhtnQ7huspHgA) which is an expanded version of [FlickrLogos-32 dataset]
+We decided to use [Logos-32plus dataset](https://drive.google.com/drive/folders/0B7jaG1vRBvyfQWhJc3ZRZE5OZjg?resourcekey=0-PQxyqOLOzBhtnQ7huspHgA) which is an expanded version of [FlickrLogos-32 dataset](https://www.uni-augsburg.de/en/fakultaet/fai/informatik/prof/mmc/research/datensatze/flickrlogos/). Both has the same classes of objects but Logos-32plus has substantially more images.
+
+<img src="./Logos-32plus_histogram.png" width="600" height="300" >
+
+The Logos-32plus dataset was built by searching for images from both Flickr and Google.  To increase variability in the data distribution, different queries were put together by concatenating a noun plus the logo name (i.e. "merchandising Becks", "can Becks", "drink Becks")
+
 <!-- [(Back to top)](#table-of-contents)  --> 
 
 <!-- This is optional and it is used to give the user info on how to use the project after installation. This could be added in the Installation section also. -->
