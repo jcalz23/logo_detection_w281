@@ -198,9 +198,7 @@ Using the ground truth bounding boxes provided by the Logos-32plus dataset, all 
 
 ![alt text](https://github.com/jcalz23/logo_detection_w281/blob/main/images/adidas_clahe.png?raw=true)
 
-**Fig. 2.** 
-
-Data augmentation generates additional training examples from a single image by applying random 3D rotation transformations and color inversions. Class balancing is enforced by adjusting the number of generated images such that the final image counts are uniform. The total number of images after data augmentation is abcdefg.
+**Fig. 2.** Data augmentation generates additional training examples from a single image by applying random 3D rotation transformations and color inversions. Class balancing is enforced by adjusting the number of generated images such that the final image counts are uniform. The total number of images after data augmentation is abcdefg.
 
 
 ## General Feature Extraction 
