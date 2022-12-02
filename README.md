@@ -1,10 +1,12 @@
 ﻿---
+﻿---
 title : "Logo Detection"
 output:   
     md_document:
         variant: markdown_github
 bibliography: "references.bib"
 #nocite: '@*'
+​---
 ---
 
 <!-- Add banner here -->
