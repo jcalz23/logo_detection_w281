@@ -1,10 +1,12 @@
----
+﻿---
+﻿﻿---
 title : "Logo Detection"
 output:   
     md_document:
         variant: markdown_github
 bibliography: "references.bib"
 #nocite: '@*'
+​---
 ---
 
 <!-- Add banner here -->
@@ -99,7 +101,7 @@ Brand logos can be found nowadays almost everywehere from images produced by IoT
 
 Logo recognition can be considered a subset of object recognition.  In general, the majority of the logos are two dimensional objects containing stylized shapes, no texture and primary colors.  In some cases, logos can contain text (i.e. Fedex logo) or can be placed in different surfaces (i.e. Coca-Cola bottle or Adidas shoes).  The logo detection process can be split in two tasks:  determining the location of the logo (bounding box) and logo classification.  Finding the logo in a real world image is a challenging task.  It is desirable to have a incremental logo model learning without exhaustive manual labelling of increasing data expansion [[5]](#5). Also, logos can appear in highly diverse contexts, scales, changes in illumination, size, resolution, and perspectives [[6]](#6)
 
-For this project, we only concentrated on the second task of the logo detection process which is the classification algorithm.  Given that the complexity of techniques  to identify a logo in an image, we did not think it was feasible to complete the implementation on time.  Instead, we used the ground truth bounding boxes in [Logos-32plus](http://www.ivl.disco.unimib.it/activities/logo-recognition/) as our starting point.  To prepare data for classification, we applied several pre-processing methods such Contrast Limited Adaptive Histogram Equalization (CLAHE) algorithm, data augmentation and class balancing.  
+To prepare data for classification, we applied several pre-processing methods such Contrast Limited Adaptive Histogram Equalization (CLAHE) algorithm, data augmentation and class balancing.  
 
 To classify logos, we built three 1-vs-all linear SVMs models and one CNN model :
 1. General Feature Extraction Model.  We used Choras [[2]](#2) to extract color, texture and shape features from images.
@@ -107,6 +109,7 @@ To classify logos, we built three 1-vs-all linear SVMs models and one CNN model 
 3. Combined Bag of Words SIFT and General Feature Extraction Model
 4. YOLO version 5
 
+For the manual models (1-3), we only concentrated on the second task of the logo detection process which is the classification algorithm.  Given that the complexity of techniques  to identify a logo in an image, we did not think it was feasible to complete the implementation on time.  Instead, we used the ground truth bounding boxes in [Logos-32plus](http://www.ivl.disco.unimib.it/activities/logo-recognition/) as our starting point.
 
    
 <!-- Logos are persistent advertisements for a brand that may be mobile (printed on consumer goods) or immobile (storefront). In a streetview image of an area, visible logos potentially contain information about brand market share and the area's socioeconomic status. This idea can be combined with a rapidly growing resource: all kinds of devices that are equipped with cameras which constantly stream visual data to the cloud. Since this data can be automatically location-tagged, this is a rich data source for fraud detection, predicting consumer trends, or analyzing the socioeconomic status of an area based on logo type and frequency. This requires a computer vision algorithm that can identify unlabeled logos in a visual scene. -->
@@ -139,7 +142,7 @@ While other methods of extracting features from an image are subpar comparing to
 
 Choras [[2]](#2) use general features that are application independent
 
-See [[1]](#1) and [[2]](#2) reference
+
 
 <!-- *You might have noticed the **Back to top** button(if not, please notice, it's right there!). This is a good idea because it makes your README **easy to navigate.*** 
 
@@ -158,7 +161,7 @@ A method I use is after completing the README, I go through the instructions fro
 
 # Dataset
 
-[Logos-32plus](http://www.ivl.disco.unimib.it/activities/logo-recognition/) is a collection of 12,312 real-world photos that contain 32 different logo classes. It is an expansion on the the [FlickrLogos-32 dataset](https://www.uni-augsburg.de/en/fakultaet/fai/informatik/prof/mmc/research/datensatze/flickrlogos/).  Both has the same classes of objects but Logos-32plus has substantially more images.  Logos-32plus is designed to be more representative of the various conditions that logos appear in and more suitable for training keypoint-based approaches to logo recognition. To construct this dataset, images were scraped from Flickr and Google Images through a text-based search on image tags.  To increase variability in the data distribution, different queries were put together by concatenating a noun plus the logo name (i.e. "merchandising Becks", "can Becks", "drink Becks"). Scraped images were manually filtered to remove unfocused, blurred, noisy, or duplicate images [1].
+[Logos-32plus](http://www.ivl.disco.unimib.it/activities/logo-recognition/) is a collection of 12,312 real-world photos that contain 32 different logo classes. It is an expansion on the the [FlickrLogos-32 dataset](https://www.uni-augsburg.de/en/fakultaet/fai/informatik/prof/mmc/research/datensatze/flickrlogos/).  Both has the same classes of objects but Logos-32plus has substantially more images.  Logos-32plus is designed to be more representative of the various conditions that logos appear in and more suitable for training keypoint-based approaches to logo recognition. Logos appear in high contrast on approximately planar or cylindrical surfaces with varying degrees of obstruction. To construct this dataset, images were scraped from Flickr and Google Images through a text-based search on image tags.  To increase variability in the data distribution, different queries were put together by concatenating a noun plus the logo name (i.e. "merchandising Becks", "can Becks", "drink Becks"). Scraped images were manually filtered to remove unfocused, blurred, noisy, or duplicate images [1].
 
 We selected 10 logo classes from the 32 in Logos-32plus to use as the total dataset for training and evaluation. Eace image in this dataset is labeled with a single class, and the 10 classes each contain 300 photos on average. Bounding box annotations are provided for each occurrence of a logo in an image; photos may have one or multiple instances of the logo corresponding to the labeled class. In cases where an image contains logos belonging to multiple classes, only logos corresponding to the image class are annotated. The distribution of images and bounding boxes per class are shown in Fig. 1. Note that bounding box counts are significantly larger than image counts due to images containing multiple occurrences of a logo.
 
@@ -213,9 +216,10 @@ Fig.2 - Data Augmentation Example using Adidas image
 
 ## General Feature Extraction 
 
-## SIFT
+## SIFT 
+Our dataset consists of real world photos with different logos in them. The logos found in the images are having different colors, scales, illumination, rotations, local affine distortions and partial occlusion. One of the features that could work well with our classification task is SIFT (Scale-invariant feature transform). We selected SIFT for the manual model as it is rotation and scale invariant and has the potential to work well when compared to other existing descriptors when there are distortions as described above in the dataset. The high-level modelling approach we selected was to identify all the SIFT keypoints and descriptors from the logos in the training set and create a bag of visual words (BOVW) using a k-means clustering algorithm. A SIFT histogram is created for each training logo based on the frequency of the visual words in the logo by attributing each descriptors to one of the clusters. The SIFT histogram was normalized and then trained using  classification algorithms SVM and Logistic Regression. A detailed description of how SIFT was implemented is described below. 
 
-To implement this method, we first need to represent a vocabulary of visual words using SIFT.  SIFT or Scale Invariant Feature Transform is a feature detection algorithm in Computer Vision.  SIFT locates features in an image, known as "keypoints".  Keypoints are scale, noise, illumination and rotation invariant.  Another important characteristic is that the relative position between the features should not change from one image to another.  Then, a vocabulary is formed by sampling local features (or keypoints) from the training set and clustering them using Kmeans.  This process partitions 128 dimensional SIFT features space into N number of regions and allow us to create histograms of visual words.
+SIFT or Scale Invariant Feature Transform is a feature detection algorithm in Computer Vision.  SIFT locates features in an image, known as "keypoints".  Keypoints are scale, noise, illumination and rotation invariant.  Another important characteristic is that the relative position between the features does not change from one image to another.  Each keypoint is a 128-dimensional feature descriptor (when 1 layer is used). A vocabulary is formed by sampling features (or keypoints) from the training set and clustering them using K-means algorithm.  This process partitions 128 dimensional SIFT features space into N number of regions and allow us to create histograms of visual words. A representation of this is seen below
 
 <p align = "center">
 <img src = "./images/sift_bagofwords.png" width="600" height="500">
@@ -224,6 +228,8 @@ To implement this method, we first need to represent a vocabulary of visual word
 Fig.1 - Bag of Words SIFT diagram from https://heraqi.blogspot.com/2017/03/BoW.html
 </p>
 
+
+The step by step implementation of SIFT and classification algorithms on the logos dataset can be accessed from this [notebook](https://github.com/jcalz23/logo_detection_w281/blob/main/SIFT_Histogram_Models_Full_and_BB.ipynb). The notebook has two sections. In the first section, the logos were extracted from the images using manual coordinates and processed through SIFT feature extraction, histogram build, and training with no data pre-processing. In the second section the input bounding boxes used were already pre-processed and augmented on which SIFT features extraction, histogram build, and training was performed. In both sections the images used were grayscale.
 
 ## YOLO
 
