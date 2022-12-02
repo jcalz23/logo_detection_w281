@@ -12,7 +12,7 @@ bibliography: "references.bib"
 # W281 - Final Project : Logo Detection
 
 <!-- ![](./images/all_logos.png  {width=40px height=400px} ) -->
-<img src="./all_logos.png" width="400" height="200" >
+<img src="./images/all_logos.png" width="400" height="200" >
 
 Authors: Luis Chion (lmchion@berkeley.edu), Eric Liu (eliu390@berkeley.edu), Viswanathan Thiagarajan (viswanathan@berkeley.edu), John Calzaretta (john.calzaretta@berkeley.edu)
 
