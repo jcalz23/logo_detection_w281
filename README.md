@@ -1,4 +1,4 @@
----
+﻿---
 title : "Logo Detection"
 output:   
     md_document:
@@ -203,9 +203,10 @@ Fig.2 - Data Augmentation Example using Adidas image
 
 ## General Feature Extraction 
 
-## SIFT
+## SIFT 
+Our dataset consists of real world photos with different logos in them. The logos found in the images are having different colors, scales, illumination, rotations, local affine distortions and partial occlusion. One of the features that could work well with our classification task is SIFT (Scale-invariant feature transform). We selected SIFT for the manual model as it is rotation and scale invariant and has the potential to work well when compared to other existing descriptors when there are distortions as described above in the dataset. The high-level modelling approach we selected was to identify all the SIFT keypoints and descriptors from the logos in the training set and create a bag of visual words (BOVW) using a k-means clustering algorithm. A SIFT histogram is created for each training logo based on the frequency of the visual words in the logo by attributing each descriptors to one of the clusters. The SIFT histogram was normalized and then trained using  classification algorithms SVM and Logistic Regression. A detailed description of how SIFT was implemented is described below. 
 
-To implement this method, we first need to represent a vocabulary of visual words using SIFT.  SIFT or Scale Invariant Feature Transform is a feature detection algorithm in Computer Vision.  SIFT locates features in an image, known as "keypoints".  Keypoints are scale, noise, illumination and rotation invariant.  Another important characteristic is that the relative position between the features should not change from one image to another.  Then, a vocabulary is formed by sampling local features (or keypoints) from the training set and clustering them using Kmeans.  This process partitions 128 dimensional SIFT features space into N number of regions and allow us to create histograms of visual words.
+SIFT or Scale Invariant Feature Transform is a feature detection algorithm in Computer Vision.  SIFT locates features in an image, known as "keypoints".  Keypoints are scale, noise, illumination and rotation invariant.  Another important characteristic is that the relative position between the features does not change from one image to another.  Each keypoint is a 128-dimensional feature descriptor (when 1 layer is used). A vocabulary is formed by sampling features (or keypoints) from the training set and clustering them using K-means algorithm.  This process partitions 128 dimensional SIFT features space into N number of regions and allow us to create histograms of visual words. A representation of this is seen below
 
 <p align = "center">
 <img src = "./images/sift_bagofwords.png" width="600" height="500">
