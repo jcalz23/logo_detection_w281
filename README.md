@@ -1,5 +1,5 @@
 ﻿---
-﻿---
+﻿﻿---
 title : "Logo Detection"
 output:   
     md_document:
@@ -217,6 +217,8 @@ SIFT or Scale Invariant Feature Transform is a feature detection algorithm in Co
 Fig.1 - Bag of Words SIFT diagram from https://heraqi.blogspot.com/2017/03/BoW.html
 </p>
 
+
+The step by step implementation of SIFT and classification algorithms on the logos dataset can be accessed from this [notebook](https://github.com/jcalz23/logo_detection_w281/blob/main/SIFT_Histogram_Models_Full_and_BB.ipynb). The notebook has two sections. In the first section, the logos were extracted from the images using manual coordinates and processed through SIFT feature extraction, histogram build, and training with no data pre-processing. In the second section the input bounding boxes used were already pre-processed and augmented on which SIFT features extraction, histogram build, and training was performed. In both sections the images used were grayscale.
 
 ## YOLO
 
