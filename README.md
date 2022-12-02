@@ -12,7 +12,7 @@ bibliography: "references.bib"
 # W281 - Final Project : Logo Detection
 
 <!-- ![](./all_logos.png  {width=40px height=400px} ) -->
-<img src="./all_logos.png" width="400" height="200" >
+<img src="./images/all_logos.png" width="400" height="200" >
 
 Authors: Luis Chion (lmchion@berkeley.edu), Eric Liu (eliu390@berkeley.edu), Viswanathan Thiagarajan (viswanathan@berkeley.edu), John Calzaretta (john.calzaretta@berkeley.edu)
 
@@ -99,8 +99,16 @@ Brand logos can be found nowadays almost everywehere from images produced by IoT
 
 Logo recognition can be considered a subset of object recognition.  In general, the majority of the logos are two dimensional objects containing stylized shapes, no texture and primary colors.  In some cases, logos can contain text (i.e. Fedex logo) or can be placed in different surfaces (i.e. Coca-Cola bottle or Adidas shoes).  The logo detection process can be split in two tasks:  determining the location of the logo (bounding box) and logo classification.  Finding the logo in a real world image is a challenging task.  It is desirable to have a incremental logo model learning without exhaustive manual labelling of increasing data expansion [[5]](#5). Also, logos can appear in highly diverse contexts, scales, changes in illumination, size, resolution, and perspectives [[6]](#6)
 
-For this project, we only concentrated on the second task of the logo detection process which is the classification algorithm.  Given the techniques described above to identify a logo in an image, we did not think it was feasible to complete the implementation on time.  Instead, we used the ground truth bounding boxes in [Logos-32plus](http://www.ivl.disco.unimib.it/activities/logo-recognition/) as our starting point.  After that, we applied several pre-processing methods such Contrast Limited Adaptive Histogram Equalization (CLAHE) algorithm, data augmentation and class balancing.  
+For this project, we only concentrated on the second task of the logo detection process which is the classification algorithm.  Given that the complexity of techniques  to identify a logo in an image, we did not think it was feasible to complete the implementation on time.  Instead, we used the ground truth bounding boxes in [Logos-32plus](http://www.ivl.disco.unimib.it/activities/logo-recognition/) as our starting point.  To prepare data for classification, we applied several pre-processing methods such Contrast Limited Adaptive Histogram Equalization (CLAHE) algorithm, data augmentation and class balancing.  
 
+To classify logos, we built three 1-vs-all linear SVMs models and one CNN model :
+1. General Feature Extraction Model.  We used Choras [[2]](#2) to extract color, texture and shape features from images.
+2. Bag of Words SIFT.
+3. Combined Bag of Words SIFT and General Feature Extraction Model
+4. YOLO version 5
+
+
+   
 <!-- Logos are persistent advertisements for a brand that may be mobile (printed on consumer goods) or immobile (storefront). In a streetview image of an area, visible logos potentially contain information about brand market share and the area's socioeconomic status. This idea can be combined with a rapidly growing resource: all kinds of devices that are equipped with cameras which constantly stream visual data to the cloud. Since this data can be automatically location-tagged, this is a rich data source for fraud detection, predicting consumer trends, or analyzing the socioeconomic status of an area based on logo type and frequency. This requires a computer vision algorithm that can identify unlabeled logos in a visual scene. -->
 
 
@@ -125,9 +133,11 @@ Here is a random GIF as a placeholder.
 # Related work
 <!-- [(Back to top)](#table-of-contents) --> 
 
-In general, logo recognition has used keypoint-based detectors and descriptions such as Bag of quantized SIFT features (BofW SIFT) [[1]](#1).  BofW SIFT is a method in which a histogram of visual words by bucketing SIFT keypoints using Kmeans clustering algorithm.   After this, 1-vs-all linear SVMs is used as classifier for logo recognition. In addition to BoW SIFT, Romberg and Lienhart [[3]](#3) use a feature bundling technique where individual local features are aggregated with features with their spatial neighborhood into bundles.  Also, Romberg et al [[3]](#3) propose to index the relative spatial layout of local features on logo regions by means of a cascaded index.  The
+In general, logo recognition has used keypoint-based detectors and descriptions such as Bag of quantized SIFT features (BofW SIFT) [[1]](#1).  BofW SIFT is a method in which a histogram of visual words by bucketing SIFT keypoints using Kmeans clustering algorithm.   After this, 1-vs-all linear SVMs is used as classifier for logo recognition. In addition to BoW SIFT, Romberg and Lienhart [[3]](#3) use a feature bundling technique where individual local features are aggregated with features with their spatial neighborhood into bundles.  Also, Romberg et al [[3]](#3) propose to index the relative spatial layout of local features on logo regions by means of a cascaded index.  
 
 While other methods of extracting features from an image are subpar comparing to BoW SIFT, we decided to include them for comparison purposes.  In specific, 
+
+Choras [[2]](#2) use general features that are application independent
 
 See [[1]](#1) and [[2]](#2) reference
 
