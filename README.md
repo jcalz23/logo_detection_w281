@@ -233,7 +233,14 @@ The step by step implementation of SIFT and classification algorithms on the log
 
 ## YOLO
 
-YOLO is a deep learning algo for real-time object detection.  It is capable not only to provide the exact location of an object in an image but also to identify it.  It uses a combination of architectures such as 
+YOLO is a deep learning algo for real-time object detection.  It is capable not only to provide the exact location of an object in an image (bounding boxes) but also able to identify it (classification).  It uses a combination of approaches such as fast R-CNN, Retina-Net and Single-Shot MultiBox DEtector (SSD).  YOLO has become the standard in object recognition due to its speed, detection accuracy, good generalization and the fact that is open-source.
+
+In preparation for the training, we loaded 3,062 groundtruth images into Roboflow using the same train test validation partition (70%-15%-15%). After uploading, images were auto oriented so images are display using the correct EXIF orientation stored in the metadata.  Also, images are resized to 460x460 pixels to improve training performance.  No further data augmentations were applied.
+
+For training YOLO, we used a batch size of 16 and we ran 300 epochs. For testing, we set our confidence and IOU threshold equal to 50%. To compare performance times and accuracy,  we selected Yolov5 and Yolov7.  
+
+
+
 
 
 # Results and Discussion
