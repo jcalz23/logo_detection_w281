@@ -246,7 +246,7 @@ YOLO is a deep learning algo for real-time object detection.  It is capable not 
 | BoW SIFT   | 0.000        | 0.000       |  0.000       |
 | GFE + BoW SIFT   | 0.000         | 0.000       |  0.000       |
 | yolov5   | 0.88      | 0.865      |  0.87       |
-| yolov7   | 0.000         | 0.000      |  0.000       |
+| yolov7   | 0.88        | 0.885     |  0.88     |
 
 
 </center>
