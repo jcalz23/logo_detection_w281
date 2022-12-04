@@ -74,10 +74,14 @@ Here is a sample TOC(*wow! such cool!*) that is actually the TOC for this README
 - [Dataset](#dataset)
 - [Methods](#methods)
   - [Image Preprocessing](#image-preprocessing)
-  - [General Feature Extraction (GFE)](#general-feature-extraction-gfe)
   - [Bag of Words SIFT (BoW SIFT)](#bag-of-words-sift-bow-sift)
+  - [General Feature Extraction (GFE)](#general-feature-extraction-gfe)
+    - [Shape](#shape)
+    - [Color](#color)
+    - [Texture](#texture)
   - [YOLO](#yolo)
 - [Results and Discussion](#results-and-discussion)
+- [Challenges and Next Steps](#challenges-and-next-steps)
 - [References](#references)
 
 <!-- - [Usage](#usage)
@@ -104,8 +108,8 @@ Logo recognition can be considered a subset of object recognition.  In general, 
 To prepare data for classification, we applied several pre-processing methods such Contrast Limited Adaptive Histogram Equalization (CLAHE) algorithm, data augmentation and class balancing.  
 
 To classify logos, we built three 1-vs-all linear SVMs models and one CNN model :
-1. General Feature Extraction Model.  We used Choras [[2]](#2) to extract color, texture and shape features from images.
-2. Bag of Words SIFT.
+1. Bag of Words SIFT.
+2. General Feature Extraction Model.  We used Choras [[2]](#2) to extract color, texture and shape features from images.
 3. Combined Bag of Words SIFT and General Feature Extraction Model
 4. YOLO version 5
 
@@ -212,10 +216,6 @@ Using the ground truth bounding boxes provided by the Logos-32plus dataset, all 
 Fig.2 - Data Augmentation Example using Adidas image
 </p>
 
-
-
-## General Feature Extraction (GFE)
-
 ## Bag of Words SIFT (BoW SIFT)
 Our dataset consists of real world photos with different logos in them. The logos found in the images are having different colors, scales, illumination, rotations, local affine distortions and partial occlusion. One of the features that could work well with our classification task is SIFT (Scale-invariant feature transform). We selected SIFT for the manual model as it is rotation and scale invariant and has the potential to work well when compared to other existing descriptors when there are distortions as described above in the dataset. The high-level modelling approach we selected was to identify all the SIFT keypoints and descriptors from the logos in the training set and create a bag of visual words (BOVW) using a k-means clustering algorithm. A SIFT histogram is created for each training logo based on the frequency of the visual words in the logo by attributing each descriptors to one of the clusters. The SIFT histogram was normalized and then trained using  classification algorithms SVM and Logistic Regression. A detailed description of how SIFT was implemented is described below. 
 
@@ -230,6 +230,23 @@ Fig.1 - Bag of Words SIFT diagram from https://heraqi.blogspot.com/2017/03/BoW.h
 
 
 The step by step implementation of SIFT and classification algorithms on the logos dataset can be accessed from this [notebook](https://github.com/jcalz23/logo_detection_w281/blob/main/SIFT_Histogram_Models_Full_and_BB.ipynb). The notebook has two sections. In the first section, the logos were extracted from the images using manual coordinates and processed through SIFT feature extraction, histogram build, and training with no data pre-processing. In the second section the input bounding boxes used were already pre-processed and augmented on which SIFT features extraction, histogram build, and training was performed. In both sections the images used were grayscale.
+
+
+## General Feature Extraction (GFE)
+
+small intro.... detailing the source of the methodology
+
+### Shape 
+
+### Color 
+
+### Texture
+
+
+
+
+
+
 
 ## YOLO
 
@@ -258,6 +275,8 @@ For training YOLO, we used a batch size of 16 and we ran 300 epochs. For testing
 
 </center>
 
+
+# Challenges and Next Steps
 
 # References 
 
