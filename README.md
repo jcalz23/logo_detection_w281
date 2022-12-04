@@ -74,8 +74,8 @@ Here is a sample TOC(*wow! such cool!*) that is actually the TOC for this README
 - [Dataset](#dataset)
 - [Methods](#methods)
   - [Image Preprocessing](#image-preprocessing)
-  - [General Feature Extraction](#general-feature-extraction)
-  - [SIFT](#sift)
+  - [General Feature Extraction (GFE)](#general-feature-extraction-gfe)
+  - [Bag of Words SIFT (BoW SIFT)](#bag-of-words-sift-bow-sift)
   - [YOLO](#yolo)
 - [Results and Discussion](#results-and-discussion)
 - [References](#references)
@@ -214,9 +214,9 @@ Fig.2 - Data Augmentation Example using Adidas image
 
 
 
-## General Feature Extraction 
+## General Feature Extraction (GFE)
 
-## SIFT 
+## Bag of Words SIFT (BoW SIFT)
 Our dataset consists of real world photos with different logos in them. The logos found in the images are having different colors, scales, illumination, rotations, local affine distortions and partial occlusion. One of the features that could work well with our classification task is SIFT (Scale-invariant feature transform). We selected SIFT for the manual model as it is rotation and scale invariant and has the potential to work well when compared to other existing descriptors when there are distortions as described above in the dataset. The high-level modelling approach we selected was to identify all the SIFT keypoints and descriptors from the logos in the training set and create a bag of visual words (BOVW) using a k-means clustering algorithm. A SIFT histogram is created for each training logo based on the frequency of the visual words in the logo by attributing each descriptors to one of the clusters. The SIFT histogram was normalized and then trained using  classification algorithms SVM and Logistic Regression. A detailed description of how SIFT was implemented is described below. 
 
 SIFT or Scale Invariant Feature Transform is a feature detection algorithm in Computer Vision.  SIFT locates features in an image, known as "keypoints".  Keypoints are scale, noise, illumination and rotation invariant.  Another important characteristic is that the relative position between the features does not change from one image to another.  Each keypoint is a 128-dimensional feature descriptor (when 1 layer is used). A vocabulary is formed by sampling features (or keypoints) from the training set and clustering them using K-means algorithm.  This process partitions 128 dimensional SIFT features space into N number of regions and allow us to create histograms of visual words. A representation of this is seen below
@@ -233,8 +233,23 @@ The step by step implementation of SIFT and classification algorithms on the log
 
 ## YOLO
 
+YOLO is a deep learning algo for real-time object detection.  It is capable not only to provide the exact location of an object in an image but also to identify it.  It uses a combination of architectures such as 
+
 
 # Results and Discussion
+
+<center>
+
+| Method     | Precision | Recall    | F1 |
+| :---        |    :----:   |         :----:  |        :----: |
+| GFE         |  0.000       | 0.000    | 0.000    |
+| BoW SIFT   | 0.000        | 0.000       |  0.000       |
+| GFE + BoW SIFT   | 0.000         | 0.000       |  0.000       |
+| yolov5   | 0.88      | 0.865      |  0.87       |
+| yolov7   | 0.000         | 0.000      |  0.000       |
+
+
+</center>
 
 
 # References 
