@@ -217,9 +217,10 @@ Fig.2 - Data Augmentation Example using Adidas image
 </p>
 
 ## Bag of Words SIFT (BoW SIFT)
-Our dataset consists of real world photos with different logos in them. The logos found in the images are having different colors, scales, illumination, rotations, local affine distortions and partial occlusion. One of the features that could work well with our classification task is SIFT (Scale-invariant feature transform). We selected SIFT for the manual model as it is rotation and scale invariant and has the potential to work well when compared to other existing descriptors when there are distortions as described above in the dataset. The high-level modelling approach we selected was to identify all the SIFT keypoints and descriptors from the logos in the training set and create a bag of visual words (BOVW) using a k-means clustering algorithm. A SIFT histogram is created for each training logo based on the frequency of the visual words in the logo by attributing each descriptors to one of the clusters. The SIFT histogram was normalized and then trained using  classification algorithms SVM and Logistic Regression. A detailed description of how SIFT was implemented is described below. 
 
-SIFT or Scale Invariant Feature Transform is a feature detection algorithm in Computer Vision.  SIFT locates features in an image, known as "keypoints".  Keypoints are scale, noise, illumination and rotation invariant.  Another important characteristic is that the relative position between the features does not change from one image to another.  Each keypoint is a 128-dimensional feature descriptor (when 1 layer is used). A vocabulary is formed by sampling features (or keypoints) from the training set and clustering them using K-means algorithm.  This process partitions 128 dimensional SIFT features space into N number of regions and allow us to create histograms of visual words. A representation of this is seen below
+Our dataset consists of real world photos with different logos in them. The logos found in the images are having different colors, scales, illumination, rotations, local affine distortions and partial occlusion. One of the features that could work well with our classification task is SIFT (Scale-invariant feature transform). We selected SIFT for the manual model as it is rotation and scale invariant and has the potential to work well when compared to other existing descriptors when there are distortions as described above in the dataset.
+
+SIFT or Scale Invariant Feature Transform is a feature detection algorithm in Computer Vision.  SIFT locates features in an image, known as "keypoints".  Keypoints are scale, noise, illumination and rotation invariant.  Another important characteristic is that the relative position between the features does not change from one image to another.  Each keypoint is a 128-dimensional feature descriptor (when 1 layer is used). A vocabulary is formed by sampling features (or keypoints) from the training set and clustering them using K-means algorithm.  This process partitions 128 dimensional SIFT features space into N number of regions and allow us to create histograms of visual words. After that, the SIFT histogram get normalized and a classification model is trained using SVM or Logistic Regression. A detailed description of how SIFT was implemented is described below. 
 
 <p align = "center">
 <img src = "./images/sift_bagofwords.png" width="600" height="500">
@@ -252,12 +253,38 @@ small intro.... detailing the source of the methodology
 
 YOLO is a deep learning algo for real-time object detection.  It is capable not only to provide the exact location of an object in an image (bounding boxes) but also able to identify it (classification).  It uses a combination of approaches such as fast R-CNN, Retina-Net and Single-Shot MultiBox DEtector (SSD).  YOLO has become the standard in object recognition due to its speed, detection accuracy, good generalization and the fact that is open-source.
 
-In preparation for the training, we loaded 3,062 groundtruth images into Roboflow using the same train test validation partition (70%-15%-15%). After uploading, images were auto oriented so images are display using the correct EXIF orientation stored in the metadata.  Also, images are resized to 460x460 pixels to improve training performance.  No further data augmentations were applied.
+In preparation for the training, we loaded 3,062 groundtruth images into Roboflow using the same train test validation partition (70%-15%-15%). After uploading, images were auto oriented so images are display using the correct EXIF orientation stored in the metadata.  Also, images are resized to 640x640 pixels to improve training performance.  No further data augmentations were applied.
 
-For training YOLO, we used a batch size of 16 and we ran 300 epochs. For testing, we set our confidence and IOU threshold equal to 50%. To compare performance times and accuracy,  we selected Yolov5 and Yolov7.  
+For training YOLO, we used a batch size of 16 and we ran 300 epochs as recommended in  [Tips for Best Training Results Documentation](https://docs.ultralytics.com/tutorials/training-tips-best-results/).  For testing, we set our confidence and IOU threshold equal to 50%. To compare performance times and accuracy,  we selected Yolov5 and Yolov7 and we found almost identical results with not noticeable performance difference.
 
 
+Here are the results of YOLOv7 Test dataset:
+<center>
 
+|  Class        |  Labels     |      P    |       R  |    mAP@.5 | mAP@.5:.95|
+| :---            |    :----:   |         :----:  |        :----: |   :----: |   :----: |
+|  all          |     677     |   0.88    |   0.885   |    0.881   |    0.701 |
+|  adidas       |          28  |     0.807   |    0.786  |     0.788  |     0.632 |
+|  apple        |         82   |    0.926   |    0.919  |     0.923   |    0.681  |
+|  bmw          |       81    |   0.862   |    0.975   |    0.947   |    0.787 |
+|  cocacola     |            71 |      0.625  |     0.774  |     0.725  |     0.431 |
+|  dhl          |        88     |  0.941    |   0.905     |  0.961    |   0.741 |
+|  fedex        |         81    |   0.949   |    0.988    |   0.989   |    0.801 |
+|  heineken     |         31    |   0.899   |    0.774   |    0.797  |     0.682 |
+|  pepsi        |     100    |   0.911   |    0.818   |    0.787   |    0.592 |
+|  starbucks    |          79  |     0.905  |     0.975  |     0.976    |   0.903 |
+|  ups          |       36    |   0.971  |     0.938  |     0.922   |    0.756 |
+
+</center>
+
+We found few interesting mislabeled images:
+
+Not Coca-Cola           |  Not Heineken           |  Not Starbucks
+:-------------------------:|:-------------------------:  |:-------------------------:
+<img src="./images/not_cocacola.jpg"  width=70% height=70%>  |  <img src="./images/not_heineken.jpg"  width=70% height=70%>  |  <img src="./images/not_starbucks.jpg"  width=70% height=70%>  
+
+
+The step by step implementation of YOLO can be found in [Yolov5.ipynb](./Yolov5.ipynb) and [Yolov7.ipynb](./Yolov7.ipynb). These notebooks came from [Roboflow's Blog: How to Train YOLOv7 on a Custom Dataset](https://blog.roboflow.com/yolov7-custom-dataset-training-tutorial/).  It shows step by step how to download the dataset, custom train and run evaluations.
 
 
 # Results and Discussion
