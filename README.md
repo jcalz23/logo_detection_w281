@@ -99,7 +99,7 @@ Here is a sample TOC(*wow! such cool!*) that is actually the TOC for this README
 # Overview
 
 
-Brand logos can be found nowadays almost everywehere from images produced by IoT devices (cars and survellaince cameras) to social media postings (Facebook, Tiktok, Instagram).  As such, logo recognition is a fundamental problem for computer vision and can be used in the following applications:
+These days brand logos can be found almost everywhere from images produced by IoT devices (cars and survellaince cameras) to social media postings (Facebook, Tiktok, Instagram).  As such, logo recognition is a fundamental problem for computer vision and can be used in the following applications:
 - Copyright and Trademark compliance :  to detect patent infrigment by identifying logo patterns and colors as a well recognized brand
 - Brand related statistics :  to understand consumer for targetted advertising.  Brand protection, recomendation and identification
 - Intelligent traffic-control systems :  to recognize a stop sign  using camera feed from vehicles
@@ -366,7 +366,7 @@ Ultimately, the Yolo model was the top performing classifier on the test set. Fi
 Fig. 5 - Comparison of model performance
 </p>
 
-It was expected that the YOLO model would be the strongest performer as it is known to deliver state of the art results across many image classification tasks. Whereas the GFE models are fit on deterministic features extracted from images, the YOLO model is able to learn abstract features that apply specifically to the logo domain in fine tuning. 
+It was expected that the YOLO model would be the strongest performer as it is known to deliver state of the art results across many image classification tasks. Whereas the GFE models are fit on deterministic features extracted from images, the YOLO model is able to learn abstract features that apply specifically to the logo domain in fine tuning. However, the Mixed GFE model is competitive with YOLO, which highlights the signal provided by the BoW SIFT and other non-learned features.
 
 The top performing model that uses only non-learned features is the Mixed GFE model. We hypothesized that the BoW SIFT features alone would deliver the top performance; however, the additional non-learned features provided additional signal. The union of all non-learned features makes the model more complex and the fact that improved performance tells us that the SIFT model is not complex enough and underfit the data.
 
