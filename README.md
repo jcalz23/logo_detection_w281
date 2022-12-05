@@ -307,12 +307,11 @@ With the non-learned features described above, we fit a set of models on each of
 
 For each feature set explored, three model forms were fit, tuned (using validated set), and evaluated:  Support Vector Machine, K-Nearest Neighbors, and Multinomial Logistic Regression. The validation set was used to tune the hyperparameters of each model. The top model configurations are displayed in Table _ below. 
 <p align = "center">
-<img src = "./images/mixed_model_config.png" >
+<img src = "./images/gfe_model_descriptions.png" >
 </p>
 <p align = "center">
 Fig.4 - Top Model Configuration per Feature Set
 </p>
-**^^SUBJECT TO CHANGE, TEMP PLACEHOLDER**
 
 The results of each model are displayed and discussed in the results section.
 
@@ -355,19 +354,43 @@ The step by step implementation of YOLO can be found in [Yolov5.ipynb](./Yolov5.
 
 
 # Results and Discussion
+In this section, we first summarize and compare the performance of each model form as defined above. Next, we discuss the performance of each model form in greater detail by looking at class-level performance. Finally, we examine specific images that were not predicted correctly by the top performing model to better understand the model’s faults and areas of potential improvement.
 
-<center>
+## Overall Performance
+Ultimately, the Yolo model was the top performing classifier on the test set. Figure 5 compares the performance of the YOLO model to the different GFE models trained on non-learned features.
 
-| Method     | Precision | Recall    | F1 |
-| :---        |    :----:   |         :----:  |        :----: |
-| GFE         |  0.000       | 0.000    | 0.000    |
-| BoW SIFT   | 0.000        | 0.000       |  0.000       |
-| GFE + BoW SIFT   | 0.000         | 0.000       |  0.000       |
-| yolov5   | 0.88      | 0.865      |  0.87       |
-| yolov7   | 0.88        | 0.885     |  0.88     |
+<p align = "center">
+<img src = "./images/performance_summary.png" >
+</p>
+<p align = "center">
+Fig. 5 - Comparison of model performance
+</p>
+
+It was expected that the YOLO model would be the strongest performer as it is known to deliver state of the art results across many image classification tasks. Whereas the GFE models are fit on deterministic features extracted from images, the YOLO model is able to learn abstract features that apply specifically to the logo domain in fine tuning. 
+
+The top performing model that uses only non-learned features is the Mixed GFE model. We hypothesized that the BoW SIFT features alone would deliver the top performance; however, the additional non-learned features provided additional signal. The union of all non-learned features makes the model more complex and the fact that improved performance tells us that the SIFT model is not complex enough and underfit the data.
+
+## Class-Level Performance
+In multiclass classification problems, it is crucial to understand the model performance across classes, rather than just the aggregate measures. Figure 6 shows the class-level performances of the YOLO, Mixed GFE, and BoW SIFT models.
+
+<p align = "center">
+<img src = "./images/class_level_f1_comparison.png" >
+</p>
+<p align = "center">
+Fig. 6 - Comparison of F1 score per class across models
+</p>
+
+Looking across logo classes and models, there are some classes that each model does well on, and some with which each model struggles. Each model has a strong F1 score for UPS, DHL and Starbucks classes; UPS and DHL are both simple and distinct logos, while Starbucks is highly distinct and likely easier for models to differentiate. Adidas and Coca Cola have F1-scores mostly below or near 0.8 for each model; this could be due to the fact that these two brands have greater diversity in the appearance of logos across a set of different products.
+
+Comparing YOLO to the Mixed GFE & Sift model, YOLO performs markedly better for Apple and BMW, and markedly worse for Coca Cola, Heineken and Pepsi. One explanation could be that the former classes are often found on flat surfaces, and the latter are all drinks which are typically found on curved surfaces.
+
+Comparing the Mixed GFE & SIFT model to the SIFT model, the Mixed model provides strong lift in each of the classes with which SIFT struggles most: Apple, BMW, and Pepsi. The remainder of classes are roughly comparable, with the Mixed model slightly outperforming the SIFT model across.
 
 
-</center>
+## Image-Level Error Analysis
+Suggested flow: Get confusion matrix for YOLO, find the class that is most commonly confused for another (e.g., Apple confused for Adidas). Then pick out some cases where Apple was predicted to be Adidas. 
+
+@Luis, we should move the images in yolo section down to this part of the results section
 
 
 # Challenges and Next Steps
