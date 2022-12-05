@@ -1,10 +1,12 @@
----
+﻿---
+﻿﻿---
 title : "Logo Detection"
 output:   
     md_document:
         variant: markdown_github
 bibliography: "references.bib"
 #nocite: '@*'
+​---
 ---
 
 <!-- Add banner here -->
@@ -12,7 +14,7 @@ bibliography: "references.bib"
 # W281 - Final Project : Logo Detection
 
 <!-- ![](./all_logos.png  {width=40px height=400px} ) -->
-<img src="./all_logos.png" width="400" height="200" >
+<img src="./images/all_logos.png" width="400" height="200" >
 
 Authors: Luis Chion (lmchion@berkeley.edu), Eric Liu (eliu390@berkeley.edu), Viswanathan Thiagarajan (viswanathan@berkeley.edu), John Calzaretta (john.calzaretta@berkeley.edu)
 
@@ -71,11 +73,15 @@ Here is a sample TOC(*wow! such cool!*) that is actually the TOC for this README
 - [Related work](#related-work)
 - [Dataset](#dataset)
 - [Methods](#methods)
-  - [Data Preprocessing](#data-preprocessing)
-  - [General Feature Extraction](#general-feature-extraction)
-  - [SIFT](#sift)
+  - [Image Preprocessing](#image-preprocessing)
+  - [Bag of Words SIFT (BoW SIFT)](#bag-of-words-sift-bow-sift)
+  - [General Feature Extraction (GFE)](#general-feature-extraction-gfe)
+    - [Shape](#shape)
+    - [Color](#color)
+    - [Texture](#texture)
   - [YOLO](#yolo)
 - [Results and Discussion](#results-and-discussion)
+- [Challenges and Next Steps](#challenges-and-next-steps)
 - [References](#references)
 
 <!-- - [Usage](#usage)
@@ -99,7 +105,17 @@ Brand logos can be found nowadays almost everywehere from images produced by IoT
 
 Logo recognition can be considered a subset of object recognition.  In general, the majority of the logos are two dimensional objects containing stylized shapes, no texture and primary colors.  In some cases, logos can contain text (i.e. Fedex logo) or can be placed in different surfaces (i.e. Coca-Cola bottle or Adidas shoes).  The logo detection process can be split in two tasks:  determining the location of the logo (bounding box) and logo classification.  Finding the logo in a real world image is a challenging task.  It is desirable to have a incremental logo model learning without exhaustive manual labelling of increasing data expansion [[5]](#5). Also, logos can appear in highly diverse contexts, scales, changes in illumination, size, resolution, and perspectives [[6]](#6)
 
+To prepare data for classification, we applied several pre-processing methods such Contrast Limited Adaptive Histogram Equalization (CLAHE) algorithm, data augmentation and class balancing.  
 
+To classify logos, we built three 1-vs-all linear SVMs models and one CNN model :
+1. Bag of Words SIFT.
+2. General Feature Extraction Model.  We used Choras [[2]](#2) to extract color, texture and shape features from images.
+3. Combined Bag of Words SIFT and General Feature Extraction Model
+4. YOLO version 5
+
+For the manual models (1-3), we only concentrated on the second task of the logo detection process which is the classification algorithm.  Given that the complexity of techniques  to identify a logo in an image, we did not think it was feasible to complete the implementation on time.  Instead, we used the ground truth bounding boxes in [Logos-32plus](http://www.ivl.disco.unimib.it/activities/logo-recognition/) as our starting point.
+
+   
 <!-- Logos are persistent advertisements for a brand that may be mobile (printed on consumer goods) or immobile (storefront). In a streetview image of an area, visible logos potentially contain information about brand market share and the area's socioeconomic status. This idea can be combined with a rapidly growing resource: all kinds of devices that are equipped with cameras which constantly stream visual data to the cloud. Since this data can be automatically location-tagged, this is a rich data source for fraud detection, predicting consumer trends, or analyzing the socioeconomic status of an area based on logo type and frequency. This requires a computer vision algorithm that can identify unlabeled logos in a visual scene. -->
 
 
@@ -124,8 +140,13 @@ Here is a random GIF as a placeholder.
 # Related work
 <!-- [(Back to top)](#table-of-contents) --> 
 
+In general, logo recognition has used keypoint-based detectors and descriptions such as Bag of quantized SIFT features (BofW SIFT) [[1]](#1).  BofW SIFT is a method in which a histogram of visual words by bucketing SIFT keypoints using Kmeans clustering algorithm.   After this, 1-vs-all linear SVMs is used as classifier for logo recognition. In addition to BoW SIFT, Romberg and Lienhart [[3]](#3) use a feature bundling technique where individual local features are aggregated with features with their spatial neighborhood into bundles.  Also, Romberg et al [[3]](#3) propose to index the relative spatial layout of local features on logo regions by means of a cascaded index.  
 
-See [[1]](#1) and [[2]](#2) reference
+While other methods of extracting features from an image are subpar comparing to BoW SIFT, we decided to include them for comparison purposes.  In specific, 
+
+Choras [[2]](#2) use general features that are application independent
+
+
 
 <!-- *You might have noticed the **Back to top** button(if not, please notice, it's right there!). This is a good idea because it makes your README **easy to navigate.*** 
 
@@ -139,12 +160,26 @@ A method I use is after completing the README, I go through the instructions fro
 
 <!-- Here is a sample instruction:-->
 
-
+@@@Discuss YOLO@@@
 
 
 # Dataset
 
-We decided to use [Logos-32plus dataset](https://drive.google.com/drive/folders/0B7jaG1vRBvyfQWhJc3ZRZE5OZjg?resourcekey=0-PQxyqOLOzBhtnQ7huspHgA) which is an expanded version of [FlickrLogos-32 dataset]
+[Logos-32plus](http://www.ivl.disco.unimib.it/activities/logo-recognition/) is a collection of 12,312 real-world photos that contain 32 different logo classes. It is an expansion on the the [FlickrLogos-32 dataset](https://www.uni-augsburg.de/en/fakultaet/fai/informatik/prof/mmc/research/datensatze/flickrlogos/).  Both has the same classes of objects but Logos-32plus has substantially more images.  Logos-32plus is designed to be more representative of the various conditions that logos appear in and more suitable for training keypoint-based approaches to logo recognition. Logos appear in high contrast on approximately planar or cylindrical surfaces with varying degrees of obstruction. To construct this dataset, images were scraped from Flickr and Google Images through a text-based search on image tags.  To increase variability in the data distribution, different queries were put together by concatenating a noun plus the logo name (i.e. "merchandising Becks", "can Becks", "drink Becks"). Scraped images were manually filtered to remove unfocused, blurred, noisy, or duplicate images [1].
+
+We selected 10 logo classes from the 32 in Logos-32plus to use as the total dataset for training and evaluation. Eace image in this dataset is labeled with a single class, and the 10 classes each contain 300 photos on average. Bounding box annotations are provided for each occurrence of a logo in an image; photos may have one or multiple instances of the logo corresponding to the labeled class. In cases where an image contains logos belonging to multiple classes, only logos corresponding to the image class are annotated. The distribution of images and bounding boxes per class are shown in Fig. 1. Note that bounding box counts are significantly larger than image counts due to images containing multiple occurrences of a logo.
+
+
+<p align = "center">
+<img src = "./images/class_counts.png" >
+</p>
+<p align = "center">
+Fig.1 - Distribution of logo images and bounding boxes per class
+
+</p>
+
+
+
 <!-- [(Back to top)](#table-of-contents)  --> 
 
 <!-- This is optional and it is used to give the user info on how to use the project after installation. This could be added in the Installation section also. -->
@@ -164,29 +199,163 @@ You could also give specific instructions to how they can setup their developmen
 
 Ideally, you should keep the README simple. If you need to add more complex explanations, use a wiki. Check out [this wiki](https://github.com/navendu-pottekkat/nsfw-filter/wiki) for inspiration. -->
 
+Non-deep learning approaches to logo prediction typically involve two steps. The first step is logo localization, which identifies potential locations in an image where a logo may be present. This can be solved by using a correlation tracker to detect image regions that have high correlation with a mask image. Multiple mask images are produced from each logo via affine transformation, rotation, and resizing. Regions that produce a sufficiently high correlation with any mask image are annotated with a bounding box and the class of the mask image. The second step is logo classification, which uses a feature-based model to perform image recognition on the bounding boxes produced by the logo localization step. Since the Logos-32plus dataset provides ground truth bounding boxes for all images, this project assumes a strongly-labeled dataset as input and focuses only on the logo classification problem.
+
+The YOLO deep learning model takes weakly-labeled images as input, while our classification system takes labeled bounding boxes as input and performs data augmentation. The train-validation-test split is applied at the image level before preprocessing to ensure that all training images produced by data augmentation are generated from the training images seen by YOLO; similarly for validation and test. We apply a 70-15-15 train-validation-test split in order to maximize the size of the validation and test sets and increase the generalization and robustness of model evaluation metrics. The impact of the reduced training set size is negligible due to the significant data augmentation performed.
 
 
+## Image Preprocessing
 
-## Data Preprocessing
+Using the ground truth bounding boxes provided by the Logos-32plus dataset, all bounding boxes are extracted from each image. Each bounding box is now considered a unique logo image that belongs to the same class and data split as the source image. Image contrast normalization is performed on by applying the Contrast Limited Adaptive Histogram Equalization (CLAHE) algorithm with 4x4 tile size to the luminance channel of each image. Example output of this step is shown in Fig. 2. Data augmentation generates additional training examples from a single image by applying random 3D rotation transformations and color inversions. Class balancing is enforced by adjusting the number of generated images such that the final image counts are uniform. The total number of images after data augmentation is abcdefg.
 
 
+<p align = "center">
+<img src = "./images/adidas_clahe.png" >
+</p>
+<p align = "center">
+Fig.2 - Data Augmentation Example using Adidas image
+</p>
+
+## Bag of Words SIFT (BoW SIFT)
+
+Our dataset consists of real world photos with different logos in them. The logos found in the images are having different colors, scales, illumination, rotations, local affine distortions and partial occlusion. One of the features that could work well with our classification task is SIFT (Scale-invariant feature transform). We selected SIFT for the manual model as it is rotation and scale invariant and has the potential to work well when compared to other existing descriptors when there are distortions as described above in the dataset.
+
+SIFT or Scale Invariant Feature Transform is a feature detection algorithm in Computer Vision.  SIFT locates features in an image, known as "keypoints".  Keypoints are scale, noise, illumination and rotation invariant.  Another important characteristic is that the relative position between the features does not change from one image to another.  Each keypoint is a 128-dimensional feature descriptor (when 1 layer is used). A vocabulary is formed by sampling features (or keypoints) from the training set and clustering them using K-means algorithm.  This process partitions 128 dimensional SIFT features space into N number of regions and allow us to create histograms of visual words. After that, the SIFT histogram get normalized and a classification model is trained using SVM or Logistic Regression. A detailed description of how SIFT was implemented is described below. 
+
+<p align = "center">
+<img src = "./images/sift_bagofwords.png" width="600" height="500">
+</p>
+<p align = "center">
+Fig.1 - Bag of Words SIFT diagram from https://heraqi.blogspot.com/2017/03/BoW.html
+</p>
 
 
-## General Feature Extraction 
+The step by step implementation of SIFT and classification algorithms on the logos dataset can be accessed from this [notebook](https://github.com/jcalz23/logo_detection_w281/blob/main/SIFT_Histogram_Models_Full_and_BB.ipynb). The notebook has two sections. In the first section, the logos were extracted from the images using manual coordinates and processed through SIFT feature extraction, histogram build, and training with no data pre-processing. In the second section the input bounding boxes used were already pre-processed and augmented on which SIFT features extraction, histogram build, and training was performed. In both sections the images used were grayscale.
 
-## SIFT
+
+## General Feature Extraction (GFE)
+
+Along with the BoW SIFT features, additional non-learned features were extracted from the image bounding boxes, these include: shape, color and texture feautures. The motivation is to understand if model performance improves when fit on BoW SIFT and additional features. 
+
+### Shape 
+
+
+### Color 
+Color features are advantageous in image classification as they are robust to rotation, simple to compute, and require minimal storage. Color features can be effective in the logo domain as many brand logos use consistent color schemes the majority of the time. However, a key challenge is presented when a brand uses several different color schemes for a single logo. For example, the classic Coca Cola can is known for its red and white color scheme, but the Coca Cola Zero product uses black and red coloring.
+
+When extracting color features, the standard approach is to build a color histogram to represent an image. Given a color histogram, color moments are an effective way to condense the representation. For each image and color model (RGB, HSV, YCrCB), we extract the first (mean), second (variance) and third order (skewness) color moments, thus resulting in nine color moment features per image. 
+
+For each color component *k*, the first color moment is defined by
+<p align = "center">
+<img src = "./images/color_m1.png" >
+</p>
+<p align = "center">
+</p>
+
+where the color of the pixel (*x, y*) is represented by *f<sub>k</sub>(x, y)*. For the second and third moments (*h = 2, 3*), each color component *k* is defined as 
+<p align = "center">
+<img src = "./images/color_mh.png" >
+</p>
+<p align = "center">
+</p>
+
+
+### Texture
+Texture is another important property of a logo; while they do not uniquely describe a logo, they may help differentiate textured logos from non-textures ones. For example, FedEx logos are typically found in print (plastic) or on vehicle decals (metal), and Adidas logos are frequently found on clothing and shoes (fabric, leather).
+
+A statistical approach to generating texture features uses a gray level co-occurrence matrix, which is a histogram of co-occurring grayscale values (i, j) at a given distance d (defined in polar coordinates) over an image. The co-occurrence matrix C(i, j) is defined by
+<p align = "center">
+<img src = "./images/co_occurrence.png" >
+</p>
+<p align = "center">
+</p>
+where card indicates the number of elements in the set. 
+
+A set of features can be extracted from the co-occurrence matrix to reduce the dimensionality of the feature space. Figure _ below captures the set of features extracted from C(i,j)
+
+<p align = "center">
+<img src = "./images/co_occurrence.png" >
+</p>
+<p align = "center">
+Fig.3 - Formulas for Texture Features from Co-Occurrence Matrix (from **CITE PAPER**) 
+</p>
+
+
+## Mixed Models from Non-Learned Features
+With the non-learned features described above, we fit a set of models on each of three feature sets: SIFT BOW only, other non-learned features only (shape, color texture), and the combination of SIFT BOW and other non-learned features. The goal of this exercise was to understand how effective each of the feature sets are alone, and if any performance lift is achieved by training on them jointly. 
+
+For each feature set explored, three model forms were fit, tuned (using validated set), and evaluated:  Support Vector Machine, K-Nearest Neighbors, and Multinomial Logistic Regression. The validation set was used to tune the hyperparameters of each model. The top model configurations are displayed in Table _ below. 
+<p align = "center">
+<img src = "./images/mixed_model_config.png" >
+</p>
+<p align = "center">
+Fig.4 - Top Model Configuration per Feature Set
+</p>
+**^^SUBJECT TO CHANGE, TEMP PLACEHOLDER**
+
+The results of each model are displayed and discussed in the results section.
 
 ## YOLO
+
+YOLO is a deep learning algo for real-time object detection.  It is capable not only to provide the exact location of an object in an image (bounding boxes) but also able to identify it (classification).  It uses a combination of approaches such as fast R-CNN, Retina-Net and Single-Shot MultiBox DEtector (SSD).  YOLO has become the standard in object recognition due to its speed, detection accuracy, good generalization and the fact that is open-source.
+
+In preparation for the training, we loaded 3,062 groundtruth images into Roboflow using the same train test validation partition (70%-15%-15%). After uploading, images were auto oriented so images are display using the correct EXIF orientation stored in the metadata.  Also, images are resized to 640x640 pixels to improve training performance.  No further data augmentations were applied.
+
+For training YOLO, we used a batch size of 16 and we ran 300 epochs as recommended in  [Tips for Best Training Results Documentation](https://docs.ultralytics.com/tutorials/training-tips-best-results/).  For testing, we set our confidence and IOU threshold equal to 50%. To compare performance times and accuracy,  we selected Yolov5 and Yolov7 and we found almost identical results with not noticeable performance difference.
+
+
+Here are the results of YOLOv7 Test dataset:
+<center>
+
+|  Class        |  Labels     |      P    |       R  |    mAP@.5 | mAP@.5:.95|
+| :---            |    :----:   |         :----:  |        :----: |   :----: |   :----: |
+|  all          |     677     |   0.88    |   0.885   |    0.881   |    0.701 |
+|  adidas       |          28  |     0.807   |    0.786  |     0.788  |     0.632 |
+|  apple        |         82   |    0.926   |    0.919  |     0.923   |    0.681  |
+|  bmw          |       81    |   0.862   |    0.975   |    0.947   |    0.787 |
+|  cocacola     |            71 |      0.625  |     0.774  |     0.725  |     0.431 |
+|  dhl          |        88     |  0.941    |   0.905     |  0.961    |   0.741 |
+|  fedex        |         81    |   0.949   |    0.988    |   0.989   |    0.801 |
+|  heineken     |         31    |   0.899   |    0.774   |    0.797  |     0.682 |
+|  pepsi        |     100    |   0.911   |    0.818   |    0.787   |    0.592 |
+|  starbucks    |          79  |     0.905  |     0.975  |     0.976    |   0.903 |
+|  ups          |       36    |   0.971  |     0.938  |     0.922   |    0.756 |
+
+</center>
+
+We found few interesting mislabeled images:
+
+Not Coca-Cola           |  Not Heineken           |  Not Starbucks
+:-------------------------:|:-------------------------:  |:-------------------------:
+<img src="./images/not_cocacola.jpg"  width=70% height=70%>  |  <img src="./images/not_heineken.jpg"  width=70% height=70%>  |  <img src="./images/not_starbucks.jpg"  width=70% height=70%>  
+
+
+The step by step implementation of YOLO can be found in [Yolov5.ipynb](./Yolov5.ipynb) and [Yolov7.ipynb](./Yolov7.ipynb). These notebooks came from [Roboflow's Blog: How to Train YOLOv7 on a Custom Dataset](https://blog.roboflow.com/yolov7-custom-dataset-training-tutorial/).  It shows step by step how to download the dataset, custom train and run evaluations.
 
 
 # Results and Discussion
 
+<center>
+
+| Method     | Precision | Recall    | F1 |
+| :---        |    :----:   |         :----:  |        :----: |
+| GFE         |  0.000       | 0.000    | 0.000    |
+| BoW SIFT   | 0.000        | 0.000       |  0.000       |
+| GFE + BoW SIFT   | 0.000         | 0.000       |  0.000       |
+| yolov5   | 0.88      | 0.865      |  0.87       |
+| yolov7   | 0.88        | 0.885     |  0.88     |
+
+
+</center>
+
+
+# Challenges and Next Steps
 
 # References 
 
 
 <a id="1">[1]</a> 
-Simone Bianco, Marco Buzzelli, Davide Mazzini and  Raimondo Schettini (2017).
+Simone Bianco, Marco Buzzelli, Davide Mazzini and Raimondo Schettini (2017).
 Deep Learning for Logo Recognition. Neurocomputing.
 https://doi.org/10.1016/j.neucom.2017.03.051
 
@@ -200,13 +369,16 @@ https://www.researchgate.net/publication/228711889_Image_feature_extraction_tech
 Stefan Romberg and Rainer Lienhart. 2013. Bundle min-hashing for logo recognition. In Proceedings of the 3rd ACM conference on International conference on multimedia retrieval (ICMR '13). Association for Computing Machinery, New York, NY, USA, 113–120. https://doi.org/10.1145/2461466.2461486
 
 <a id="4">[4]</a> 
+Romberg, Stefan & Pueyo, Lluis & Lienhart, Rainer & Zwol, Roelof. (2011). Scalable logo recognition in real-world images. 25. 10.1145/1991996.1992021. https://dl.acm.org/doi/10.1145/1991996.1992021
+
+<a id="5">[5]</a> 
 C. Li, I. Fehérvári, X. Zhao, I. Macedo and S. Appalaraju, "SeeTek: Very Large-Scale Open-set Logo Recognition with Text-Aware Metric Learning," 2022 IEEE/CVF Winter Conference on Applications of Computer Vision (WACV), 2022, pp. 587-596, doi: 10.1109/WACV51458.2022.00066. https://ieeexplore.ieee.org/document/9706752
 
 
-<a id="5">[5]</a> 
+<a id="6">[6]</a> 
 H. Su, S. Gong and X. Zhu, "WebLogo-2M: Scalable Logo Detection by Deep Learning from the Web," 2017 IEEE International Conference on Computer Vision Workshops (ICCVW), 2017, pp. 270-279, doi: 10.1109/ICCVW.2017.41. https://ieeexplore.ieee.org/abstract/document/8265251
 
-<a id="6">[6]</a> 
+<a id="7">[7]</a> 
 Hou, S., Li, J., Min, W., Hou, Q., Zhao, Y., Zheng, Y., & Jiang, S. (2022). Deep Learning for Logo Detection: A Survey. ArXiv, abs/2210.04399. https://arxiv.org/abs/2210.04399
 
 
