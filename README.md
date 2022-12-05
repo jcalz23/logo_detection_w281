@@ -79,6 +79,7 @@ Here is a sample TOC(*wow! such cool!*) that is actually the TOC for this README
     - [Shape](#shape)
     - [Color](#color)
     - [Texture](#texture)
+  - [Mixed Models from Non-Learned Features](#mixed-models-from-non-learned-features)
   - [YOLO](#yolo)
 - [Results and Discussion](#results-and-discussion)
 - [Challenges and Next Steps](#challenges-and-next-steps)
@@ -99,9 +100,10 @@ Here is a sample TOC(*wow! such cool!*) that is actually the TOC for this README
 
 
 Brand logos can be found nowadays almost everywehere from images produced by IoT devices (cars and survellaince cameras) to social media postings (Facebook, Tiktok, Instagram).  As such, logo recognition is a fundamental problem for computer vision and can be used in the following applications:
-- Copyright infringment : to detect similar logo patterns and colors as a well recognized brand
-- Brand related statistics :  to understand consumer for targetted advertising
+- Copyright and Trademark compliance :  to detect patent infrigment by identifying logo patterns and colors as a well recognized brand
+- Brand related statistics :  to understand consumer for targetted advertising.  Brand protection, recomendation and identification
 - Intelligent traffic-control systems :  to recognize a stop sign  using camera feed from vehicles
+- Document categorization : to detect logo appearing in documents and use it as a statement of ownership
 
 Logo recognition can be considered a subset of object recognition.  In general, the majority of the logos are two dimensional objects containing stylized shapes, no texture and primary colors.  In some cases, logos can contain text (i.e. Fedex logo) or can be placed in different surfaces (i.e. Coca-Cola bottle or Adidas shoes).  The logo detection process can be split in two tasks:  determining the location of the logo (bounding box) and logo classification.  Finding the logo in a real world image is a challenging task.  It is desirable to have a incremental logo model learning without exhaustive manual labelling of increasing data expansion [[5]](#5). Also, logos can appear in highly diverse contexts, scales, changes in illumination, size, resolution, and perspectives [[6]](#6)
 
@@ -140,13 +142,32 @@ Here is a random GIF as a placeholder.
 # Related work
 <!-- [(Back to top)](#table-of-contents) --> 
 
-In general, logo recognition has used keypoint-based detectors and descriptions such as Bag of quantized SIFT features (BofW SIFT) [[1]](#1).  BofW SIFT is a method in which a histogram of visual words by bucketing SIFT keypoints using Kmeans clustering algorithm.   After this, 1-vs-all linear SVMs is used as classifier for logo recognition. In addition to BoW SIFT, Romberg and Lienhart [[3]](#3) use a feature bundling technique where individual local features are aggregated with features with their spatial neighborhood into bundles.  Also, Romberg et al [[3]](#3) propose to index the relative spatial layout of local features on logo regions by means of a cascaded index.  
+In recent years, many datasets have been created to be used as quantitative and qualitative comparisons and benchmarking for logo detection[[5]](#5).  These sets vary in sizes and contain a realistic set of images with accurate ground truth annotations.  Datasets could vary quite a bit in the number of classes and images per class.  From FlickrLogos-32 with 32 classes and 2.2K images to PL8K with 8K classes and 3M images.  FlickrLogos-32 comprises of images from the real world, and many contain occlusions, apearance changes, and lighting changes.  Large datasets such as PL8K have greater class imbalance since images are collected semi-programatically.  The images in PL8K span across different enterprises, namely Clothing, Food, Transportation, Electronics, Necessities, Leisure, Medicine, Sports and Others.  
 
-While other methods of extracting features from an image are subpar comparing to BoW SIFT, we decided to include them for comparison purposes.  In specific, 
+<p align = "center">
+<img src = "./images/dataset_table.jpg" width="50%" height="50%" >
+</p>
+<p align = "center">
+Table.1 - Statistics of existing logo detection datasets
 
-Choras [[2]](#2) use general features that are application independent
+</p>
 
 
+
+Prior 2015, logo recognition has used keypoint-based detectors and descriptions such as Bag of quantized SIFT features (BofW SIFT) and Histogram of Gradients (HOG) [[1]](#1).  BofW SIFT is a method in which a histogram of visual words by bucketing SIFT keypoints using Kmeans clustering algorithm.   After this, 1-vs-all linear SVMs is used as classifier for logo recognition. In addition to BoW SIFT, Romberg and Lienhart [[3]](#3) use a feature bundling technique where individual local features are aggregated with features with their spatial neighborhood into bundles.  Also, Romberg et al [[3]](#3) propose to index the relative spatial layout of local features on logo regions by means of a cascaded index.  
+
+Choras [[2]](#2) use general features extraction methods that are application independent such as color, texture, and shape.  These features can be further divided into pixel-level features such as color and location, local features as a result of subdivision of the image band in segments or edges, global features over the entire image or sub-area.  To represent color features, the author uses color moments (mean, variance, skewness) extracted from RGB, HSV and YCrCb color histograms.  Texture is also a powerful descriptor but on its own does not have the capability of finding objects.  Texture can be calculated using different methods such as Fourier power spectra, co-ocurrence matrices, SPCA, Tamura features, and Wold decomposition.  Last, Shape is one of the primitive features for image content description but measuring is difficult.   Shape methods can be divided in region and contour based. While Region-based use the whole area, Contour-based use only info from the contours of an object.
+For classification, lower order moments are calculated to extract Shape features.  The most common moments are geometrical, central, moment invariants, Zernike moments, Hu moments and Legendre moments.
+
+In recent reasearch, deep learning has emerged as the default standard for logo detection.  Deep learning models are classified into 4 categories: Convolutional Neural Network models, YOLO-based models, Single Shot Detector-based models and Feature Pyramid Network-based models.  
+1. R-CNN is a typical proposals-based approach but it is slow in detecting objects due to its Selective Search (SS) algorithm.  To overcome this, a Faster R-CNN algo was proposed that uses region proposal network (RPN) to generate region proposals.  
+2. In contrast of R-CNN, YOLO proposes the use of an end-to-end neural network that makes prediction of bounding boxes and class probabilities all in one single stage.  At a high level, YOlO divides the images into N grids of dimension SxS.  These grids predict the bounding boxes along with the labels and the probability of the object being present in a cell.  YOLO uses Non Maximal Supression method to exclude the bounding boxes with lower probability scores.  
+3. Single Shot Detector-based models (SSD) uses multi-scale feature maps to detect objects at different scales. It is comparable to YOLO in that it takes only one shot to detect multiple objects present in an image using multibox. Outperforms a comparable state-of-the-art Faster R-CNN and is widely used in vehicle logo detection.
+4. Feature Pyramid Network (FPN) uses also a multiple feature map layers similar to SSD.  It is composed of two pathways : bottom-up and top-down.  The bottom-up is the usual convolutional network for feature extraction.  As we go up on the layer, the spatial resolution decreases but the semantic value increases.  In comparison, SSD only uses top layers of bottom-up pathway for prediction whereas FPN provides a top-down pathway to construct higher resolution layers from a semantic rich layer.
+
+Robust and accurate detection is still difficult.  Logos tend to be small in size and maybe difficult to detect them in complex backgrounds (i.e. logo sign on a busy street).  The backgrounds can be very diverse in nature.  Logos can be place in bottles, shirts, cars, billboards and all sorts of shapes and textures (i.e. nike logo in shoes and clothes).  Sub-branding detection can impose additional difficulties when there are subtle differences between parent brands and sub-brands (i.e. coca-cola and diet coke).   There is still plenty of work to do to improve logo detection.  Higher resolution feature maps have been used with sucess but it is too computationally expensive and too slow for real-time applications.
+
+Some future research directions include:  Lightweight logo detection to reduce model complexity while mantaining the same accuracy. Weekly supervised logo detection to automate the annotation not only reduces the cost but improves the generalization and robustness of the model.  Video logo detection which provides more information to business by adding correlation between consecutive images.  Tiny logo detection with not enough pixel information for recognition.  Long tail logo detection for up and coming small businesses where you cannot find enough image samples.  Incremental logo detection where we assume an open dataset where new logo and logo variations emerge every day.
 
 <!-- *You might have noticed the **Back to top** button(if not, please notice, it's right there!). This is a good idea because it makes your README **easy to navigate.*** 
 
@@ -160,7 +181,7 @@ A method I use is after completing the README, I go through the instructions fro
 
 <!-- Here is a sample instruction:-->
 
-@@@Discuss YOLO@@@
+
 
 
 # Dataset
@@ -201,7 +222,7 @@ Ideally, you should keep the README simple. If you need to add more complex expl
 
 Non-deep learning approaches to logo prediction typically involve two steps. The first step is logo localization, which identifies potential locations in an image where a logo may be present. This can be solved by using a correlation tracker to detect image regions that have high correlation with a mask image. Multiple mask images are produced from each logo via affine transformation, rotation, and resizing. Regions that produce a sufficiently high correlation with any mask image are annotated with a bounding box and the class of the mask image. The second step is logo classification, which uses a feature-based model to perform image recognition on the bounding boxes produced by the logo localization step. Since the Logos-32plus dataset provides ground truth bounding boxes for all images, this project assumes a strongly-labeled dataset as input and focuses only on the logo classification problem.
 
-The YOLO deep learning model takes weakly-labeled images as input, while our classification system takes labeled bounding boxes as input and performs data augmentation. The train-validation-test split is applied at the image level before preprocessing to ensure that all training images produced by data augmentation are generated from the training images seen by YOLO; similarly for validation and test. We apply a 70-15-15 train-validation-test split in order to maximize the size of the validation and test sets and increase the generalization and robustness of model evaluation metrics. The impact of the reduced training set size is negligible due to the significant data augmentation performed.
+The YOLO deep learning model takes entire images with annotations as input, while our classification system takes labeled bounding boxes as input and performs data augmentation. The train-validation-test split is applied at the image level before preprocessing to ensure that all training images produced by data augmentation are generated from the training images seen by YOLO; similarly for validation and test. We apply a 70-15-15 train-validation-test split in order to maximize the size of the validation and test sets and increase the generalization and robustness of model evaluation metrics. The impact of the reduced training set size is negligible due to the significant data augmentation performed.
 
 
 ## Image Preprocessing
@@ -351,6 +372,10 @@ The step by step implementation of YOLO can be found in [Yolov5.ipynb](./Yolov5.
 
 # Challenges and Next Steps
 
+
+
+
+
 # References 
 
 
@@ -371,15 +396,18 @@ Stefan Romberg and Rainer Lienhart. 2013. Bundle min-hashing for logo recognitio
 <a id="4">[4]</a> 
 Romberg, Stefan & Pueyo, Lluis & Lienhart, Rainer & Zwol, Roelof. (2011). Scalable logo recognition in real-world images. 25. 10.1145/1991996.1992021. https://dl.acm.org/doi/10.1145/1991996.1992021
 
+
 <a id="5">[5]</a> 
+Hou, S., Li, J., Min, W., Hou, Q., Zhao, Y., Zheng, Y., & Jiang, S. (2022). Deep Learning for Logo Detection: A Survey. ArXiv, abs/2210.04399. https://arxiv.org/abs/2210.04399
+
+<a id="6">[6]</a> 
 C. Li, I. Fehérvári, X. Zhao, I. Macedo and S. Appalaraju, "SeeTek: Very Large-Scale Open-set Logo Recognition with Text-Aware Metric Learning," 2022 IEEE/CVF Winter Conference on Applications of Computer Vision (WACV), 2022, pp. 587-596, doi: 10.1109/WACV51458.2022.00066. https://ieeexplore.ieee.org/document/9706752
 
 
-<a id="6">[6]</a> 
+<a id="7">[7]</a> 
 H. Su, S. Gong and X. Zhu, "WebLogo-2M: Scalable Logo Detection by Deep Learning from the Web," 2017 IEEE International Conference on Computer Vision Workshops (ICCVW), 2017, pp. 270-279, doi: 10.1109/ICCVW.2017.41. https://ieeexplore.ieee.org/abstract/document/8265251
 
-<a id="7">[7]</a> 
-Hou, S., Li, J., Min, W., Hou, Q., Zhao, Y., Zheng, Y., & Jiang, S. (2022). Deep Learning for Logo Detection: A Survey. ArXiv, abs/2210.04399. https://arxiv.org/abs/2210.04399
+
 
 
 <!-- <div id="refs"></div> -->
