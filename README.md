@@ -235,19 +235,65 @@ The step by step implementation of SIFT and classification algorithms on the log
 
 ## General Feature Extraction (GFE)
 
-small intro.... detailing the source of the methodology
+Along with the BoW SIFT features, additional non-learned features were extracted from the image bounding boxes, these include: shape, color and texture feautures. The motivation is to understand if model performance improves when fit on BoW SIFT and additional features. 
 
 ### Shape 
 
+
 ### Color 
+Color features are advantageous in image classification as they are robust to rotation, simple to compute, and require minimal storage. Color features can be effective in the logo domain as many brand logos use consistent color schemes the majority of the time. However, a key challenge is presented when a brand uses several different color schemes for a single logo. For example, the classic Coca Cola can is known for its red and white color scheme, but the Coca Cola Zero product uses black and red coloring.
+
+When extracting color features, the standard approach is to build a color histogram to represent an image. Given a color histogram, color moments are an effective way to condense the representation. For each image and color model (RGB, HSV, YCrCB), we extract the first (mean), second (variance) and third order (skewness) color moments, thus resulting in nine color moment features per image. 
+
+For each color component *k*, the first color moment is defined by
+<p align = "center">
+<img src = "./images/color_m1.png" >
+</p>
+<p align = "center">
+</p>
+
+where the color of the pixel (*x, y*) is represented by *f<sub>k</sub>(x, y)*. For the second and third moments (*h = 2, 3*), each color component *k* is defined as 
+<p align = "center">
+<img src = "./images/color_mh.png" >
+</p>
+<p align = "center">
+</p>
+
 
 ### Texture
+Texture is another important property of a logo; while they do not uniquely describe a logo, they may help differentiate textured logos from non-textures ones. For example, FedEx logos are typically found in print (plastic) or on vehicle decals (metal), and Adidas logos are frequently found on clothing and shoes (fabric, leather).
+
+A statistical approach to generating texture features uses a gray level co-occurrence matrix, which is a histogram of co-occurring grayscale values (i, j) at a given distance d (defined in polar coordinates) over an image. The co-occurrence matrix C(i, j) is defined by
+<p align = "center">
+<img src = "./images/co_occurrence.png" >
+</p>
+<p align = "center">
+</p>
+where card indicates the number of elements in the set. 
+
+A set of features can be extracted from the co-occurrence matrix to reduce the dimensionality of the feature space. Figure _ below captures the set of features extracted from C(i,j)
+
+<p align = "center">
+<img src = "./images/co_occurrence.png" >
+</p>
+<p align = "center">
+Fig.3 - Formulas for Texture Features from Co-Occurrence Matrix (from **CITE PAPER**) 
+</p>
 
 
+## Mixed Models from Non-Learned Features
+With the non-learned features described above, we fit a set of models on each of three feature sets: SIFT BOW only, other non-learned features only (shape, color texture), and the combination of SIFT BOW and other non-learned features. The goal of this exercise was to understand how effective each of the feature sets are alone, and if any performance lift is achieved by training on them jointly. 
 
+For each feature set explored, three model forms were fit, tuned (using validated set), and evaluated:  Support Vector Machine, K-Nearest Neighbors, and Multinomial Logistic Regression. The validation set was used to tune the hyperparameters of each model. The top model configurations are displayed in Table _ below. 
+<p align = "center">
+<img src = "./images/mixed_model_config.png" >
+</p>
+<p align = "center">
+Fig.4 - Top Model Configuration per Feature Set
+</p>
+**^^SUBJECT TO CHANGE, TEMP PLACEHOLDER**
 
-
-
+The results of each model are displayed and discussed in the results section.
 
 ## YOLO
 
