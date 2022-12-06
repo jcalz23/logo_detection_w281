@@ -394,10 +394,19 @@ Suggested flow: Get confusion matrix for YOLO, find the class that is most commo
 
 
 # Challenges and Next Steps
+During the data pre-processing, augmentation and the model building phases we encountered a few challenges which are listed below:
 
+* The Logos 32 plus dataset consists of 32 classes. We had to reduce the selection to 10 classes to keep data processing and training manageable.
+* A SIFT Bag-of-visual-words histogram model was used during training. As we increased the number of bins/clusters for the descriptors, the model continued to show improved performance on the validation set. We hit computing capacity before we could further increase complexity and validate the model.
+* Locally adaptive contrast enhancement was done on the input data to recover details in low contrast regions. While we expected the number of keypoint descriptors to increase due to this data preprocessing step, the increase was 3.5 times per image. This caused severe performance bottle necks while running the k-means algorithm to create SIFT Bag-of-visual-words.
+* Extracting SIFT keypoints from some of the homogeneous logo images were challenging and no keypoints were detected in some cases. These have been excluded during both training and validation.
 
+As an extension to this project, we have identified a few next steps:
 
-
+* Build a classification model that includes all 32 classes
+* Increase complexity of the model by introducing additional features into the Mixed model
+* Perform Locally adaptive contrast enhancement with a larger kernel limiting the noisy details
+* Perform data augmentation for the training similar to the Bianco et al. paper[1]
 
 # References 
 
