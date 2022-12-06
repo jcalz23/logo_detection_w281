@@ -483,12 +483,14 @@ During the data pre-processing, augmentation and the model building phases we en
 * A SIFT Bag-of-visual-words histogram model was used during training. As we increased the number of bins/clusters for the descriptors, the model continued to show improved performance on the validation set. We hit computing capacity before we could further increase complexity and validate the model.
 * Contrast Limited AHE (CLAHE) was used to reduce this problem of noise amplification. Due to the use of a smaller kernel in this step, keypoints increased by 3.5 times per image. This caused severe performance bottle necks while running the k-means algorithm to create SIFT Bag-of-visual-words.
 * Extracting SIFT keypoints from some of the homogeneous logo images were challenging and no keypoints were detected in some cases. These have been excluded during both training and validation.
+* Handling same brand logos with different color schemes, mirror images and textures on different surfaces.
 
 As an extension to this project, we have identified a few next steps:
 
 * Build a classification model that includes all 32 classes
 * Perform Contrast Limited AHE with a larger kernel limiting the contrast amplification and the noisy details
 * Perform data augmentation for the training similar to the Bianco et al. paper[1]
+* Use 2 layers in SIFT with 160 dimension keypoint descriptors
 * Increase complexity of the Mixed model by introducing additional features into the model
 * Execute Yolo algorithm on the dataset by enabling data augmentation options 
 
