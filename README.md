@@ -399,6 +399,20 @@ Suggested flow: Get confusion matrix for YOLO, find the class that is most commo
 
 <div id="image-table">
     <table>
+       <tr>
+    	      <td style="padding:10px">
+        	    Undetected PEPSI due to blur
+      	    </td>
+            <td style="padding:10px">
+            	Detected partial Starbucks
+            </td>
+            <td style="padding:10px">
+            	Shouldn't have detected Coca-Cola
+            </td>
+            <td style="padding:10px">
+            	Not detected small BMW
+            </td>
+        </tr>
 	    <tr>
     	      <td style="padding:10px">
         	    <img src="./images/blurry_pepsi.jpg"  width=70% height=70%/>
@@ -411,6 +425,20 @@ Suggested flow: Get confusion matrix for YOLO, find the class that is most commo
             </td>
             <td style="padding:10px">
             	<img src="./images/not_detected_bmw.jpg"  width=70% height=70%/>
+            </td>
+        </tr>
+        <tr>
+    	      <td style="padding:10px">
+        	    Undetected small Heineken sign
+      	    </td>
+            <td style="padding:10px">
+            	Shouldn't have detected Heineken
+            </td>
+            <td style="padding:10px">
+            	Not detected different Heineken logos
+            </td>
+            <td style="padding:10px">
+            	Not detected warped Coca-Cola
             </td>
         </tr>
         <tr>
