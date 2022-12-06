@@ -493,6 +493,7 @@ As an extension to this project, we have identified a few next steps:
 * Build a classification model that includes all 32 classes
 * Perform Contrast Limited AHE with a larger kernel limiting the contrast amplification and the noisy details
 * Perform data augmentation for the training similar to the Bianco et al. paper[1]
+* Use 2 layers in SIFT with 160 dimension keypoint descriptors
 * Increase complexity of the Mixed model by introducing additional features into the model
 * Execute Yolo algorithm on the dataset by enabling data augmentation options 
 
