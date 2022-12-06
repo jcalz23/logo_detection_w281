@@ -87,6 +87,7 @@ Here is a sample TOC(*wow! such cool!*) that is actually the TOC for this README
   - [Image-Level Error Analysis](#image-level-error-analysis)
   - [State of the Art Comparison](#state-of-the-art-comparison)
 - [Challenges and Next Steps](#challenges-and-next-steps)
+- [Appendix 1 : additional YOLO results](#appendix-1--additional-yolo-results)
 - [References](#references)
 
 <!-- - [Usage](#usage)
@@ -117,7 +118,7 @@ To classify logos, we built three 1-vs-all linear SVMs models and one CNN model 
 1. Bag of Words SIFT.
 2. General Feature Extraction Model.  We used Choras [[2]](#2) to extract color, texture and shape features from images.
 3. Combined Bag of Words SIFT and General Feature Extraction Model
-4. YOLO version 5
+4. YOLO version 7
 
 For the manual models (1-3), we only concentrated on the second task of the logo detection process which is the classification algorithm.  Given that the complexity of techniques  to identify a logo in an image, we did not think it was feasible to complete the implementation on time.  Instead, we used the ground truth bounding boxes in [Logos-32plus](http://www.ivl.disco.unimib.it/activities/logo-recognition/) as our starting point.
 
@@ -323,8 +324,7 @@ YOLO is a deep learning algo for real-time object detection.  It is capable not 
 
 In preparation for the training, we loaded 3,062 groundtruth images into Roboflow using the same train test validation partition (70%-15%-15%). After uploading, images were auto oriented so images are display using the correct EXIF orientation stored in the metadata.  Also, images are resized to 640x640 pixels to improve training performance.  No further data augmentations were applied.
 
-For training YOLO, we used a batch size of 16 and we ran 300 epochs as recommended in  [Tips for Best Training Results Documentation](https://docs.ultralytics.com/tutorials/training-tips-best-results/).  For testing, we set our confidence and IOU threshold equal to 50%. To compare performance times and accuracy,  we selected Yolov5 and Yolov7 and we found almost identical results with not noticeable performance difference.
-
+For training YOLO, we used a batch size of 16 and we ran 300 epochs as recommended in  [Tips for Best Training Results Documentation](https://docs.ultralytics.com/tutorials/training-tips-best-results/).  For testing, we set our confidence and IOU threshold equal to 50%. 
 
 <!-- Here are the results of YOLOv7 Test dataset:
 <center>
@@ -350,7 +350,7 @@ For training YOLO, we used a batch size of 16 and we ran 300 epochs as recommend
 
 
 
-The step by step implementation of YOLO can be found in [Yolov5.ipynb](./Yolov5.ipynb) and [Yolov7.ipynb](./Yolov7.ipynb). These notebooks came from [Roboflow's Blog: How to Train YOLOv7 on a Custom Dataset](https://blog.roboflow.com/yolov7-custom-dataset-training-tutorial/).  It shows step by step how to download the dataset, custom train and run evaluations.
+The step by step implementation of YOLO can be found in [Yolov5.ipynb](./Yolov5.ipynb). These notebooks came from [Roboflow's Blog: How to Train YOLOv7 on a Custom Dataset](https://blog.roboflow.com/yolov7-custom-dataset-training-tutorial/).  It shows step by step how to download the dataset, custom train and run evaluations.
 
 
 # Results and Discussion
@@ -387,9 +387,6 @@ Comparing YOLO to the Mixed GFE & Sift model, YOLO performs markedly better for 
 Comparing the Mixed GFE & SIFT model to the SIFT model, the Mixed model provides strong lift in each of the classes with which SIFT struggles most: Apple, BMW, and Pepsi. The remainder of classes are roughly comparable, with the Mixed model slightly outperforming the SIFT model across.
 
 ## Image-Level Error Analysis
-Suggested flow: Get confusion matrix for YOLO, find the class that is most commonly confused for another (e.g., Apple confused for Adidas). Then pick out some cases where Apple was predicted to be Adidas. 
-
-@Luis, we should move the images in yolo section down to this part of the results section
 
 
 <!-- :-------------------------:|:-------------------------:  |:-------------------------: |:-------------------------: |
@@ -494,6 +491,54 @@ As an extension to this project, we have identified a few next steps:
 * Perform data augmentation for the training similar to the Bianco et al. paper[1]
 * Increase complexity of the Mixed model by introducing additional features into the model
 * Execute Yolo algorithm on the dataset by enabling data augmentation options 
+
+
+# Appendix 1 : additional YOLO results
+
+
+
+<p align = "center">
+<img src = "./images/confusion_matrix.png" width="30%" height="30%" >
+</p>
+<p align = "center">
+YOLOv7 Test Confusion Matrix
+
+</p>
+
+<p align = "center">
+<img src = "./images/PR_curve.png" width="30%" height="30%" >
+</p>
+<p align = "center">
+YOLOv7 Test PR Curve
+
+</p>
+
+<p align = "center">
+<img src = "./images/F1_curve.png" width="30%" height="30%" >
+</p>
+<p align = "center">
+YOLOv7 Test F1 Curve
+
+</p>
+
+<p align = "center">
+<img src = "./images/P_curve.png" width="30%" height="30%" >
+</p>
+<p align = "center">
+YOLOv7 Test P Curve
+
+</p>
+
+</p>
+
+<p align = "center">
+<img src = "./images/P_curve.png" width="30%" height="30%" >
+</p>
+<p align = "center">
+YOLOv7 Test R Curve
+
+</p>
+
 
 # References 
 
