@@ -82,6 +82,10 @@ Here is a sample TOC(*wow! such cool!*) that is actually the TOC for this README
   - [Mixed Models from Non-Learned Features](#mixed-models-from-non-learned-features)
   - [YOLO](#yolo)
 - [Results and Discussion](#results-and-discussion)
+  - [Overall Performance](#overall-performance)
+  - [Class-Level Performance](#class-level-performance)
+  - [Image-Level Error Analysis](#image-level-error-analysis)
+  - [State of the Art Comparison](#state-of-the-art-comparison)
 - [Challenges and Next Steps](#challenges-and-next-steps)
 - [References](#references)
 
@@ -322,7 +326,7 @@ In preparation for the training, we loaded 3,062 groundtruth images into Roboflo
 For training YOLO, we used a batch size of 16 and we ran 300 epochs as recommended in  [Tips for Best Training Results Documentation](https://docs.ultralytics.com/tutorials/training-tips-best-results/).  For testing, we set our confidence and IOU threshold equal to 50%. To compare performance times and accuracy,  we selected Yolov5 and Yolov7 and we found almost identical results with not noticeable performance difference.
 
 
-Here are the results of YOLOv7 Test dataset:
+<!-- Here are the results of YOLOv7 Test dataset:
 <center>
 
 |  Class        |  Labels     |      P    |       R  |    mAP@.5 | mAP@.5:.95|
@@ -339,13 +343,11 @@ Here are the results of YOLOv7 Test dataset:
 |  starbucks    |          79  |     0.905  |     0.975  |     0.976    |   0.903 |
 |  ups          |       36    |   0.971  |     0.938  |     0.922   |    0.756 |
 
-</center>
+</center> -->
 
-We found few interesting mislabeled images:
 
-Not Coca-Cola           |  Not Heineken           |  Not Starbucks
-:-------------------------:|:-------------------------:  |:-------------------------:
-<img src="./images/not_cocacola.jpg"  width=70% height=70%>  |  <img src="./images/not_heineken.jpg"  width=70% height=70%>  |  <img src="./images/not_starbucks.jpg"  width=70% height=70%>  
+
+
 
 
 The step by step implementation of YOLO can be found in [Yolov5.ipynb](./Yolov5.ipynb) and [Yolov7.ipynb](./Yolov7.ipynb). These notebooks came from [Roboflow's Blog: How to Train YOLOv7 on a Custom Dataset](https://blog.roboflow.com/yolov7-custom-dataset-training-tutorial/).  It shows step by step how to download the dataset, custom train and run evaluations.
@@ -388,6 +390,46 @@ Comparing the Mixed GFE & SIFT model to the SIFT model, the Mixed model provides
 Suggested flow: Get confusion matrix for YOLO, find the class that is most commonly confused for another (e.g., Apple confused for Adidas). Then pick out some cases where Apple was predicted to be Adidas. 
 
 @Luis, we should move the images in yolo section down to this part of the results section
+
+
+<!-- :-------------------------:|:-------------------------:  |:-------------------------: |:-------------------------: |
+<img src="./images/blurry_pepsi.jpg"  width=70% height=70%>  |  <img src="./images/half_starbucks.jpg"  width=70% height=70%>  |  <img src="./images/not_cocacola.jpg"  width=70% height=70%>   |  <img src="./images/not_detected_bmw.jpg"  width=70% height=70%>   |
+<img src="./images/not_detected_heineken.jpg"  width=70% height=70%>  |  <img src="./images/not_heineken.jpg"  width=70% height=70%>  |  <img src="./images/other_heineken.jpg"  width=70% height=70%>   |  <img src="./images/warped_coke.jpg"  width=70% height=70%>   | -->
+
+
+<div id="image-table">
+    <table>
+	    <tr>
+    	      <td style="padding:10px">
+        	    <img src="./images/blurry_pepsi.jpg"  width=70% height=70%/>
+      	    </td>
+            <td style="padding:10px">
+            	<img src="./images/half_starbucks.jpg"  width=70% height=70%/>
+            </td>
+            <td style="padding:10px">
+            	<img src="./images/not_cocacola.jpg"  width=70% height=70%/>
+            </td>
+            <td style="padding:10px">
+            	<img src="./images/not_detected_bmw.jpg"  width=70% height=70%/>
+            </td>
+        </tr>
+        <tr>
+    	      <td style="padding:10px">
+        	    <img src="./images/not_detected_heineken.jpg"  width=70% height=70%/>
+      	    </td>
+            <td style="padding:10px">
+            	<img src="./images/not_heineken.jpg"  width=70% height=70%/>
+            </td>
+            <td style="padding:10px">
+            	<img src="./images/other_heineken.jpg"  width=70% height=70%/>
+            </td>
+            <td style="padding:10px">
+            	<img src="./images/warped_coke.png"  width=70% height=70%/>
+            </td>
+        </tr>
+    </table>
+</div>
+
 
 ## State of the Art Comparison
 As mentioned in the Data section, our models are developed on a subset of classes in the Logos32+ dataset (compute constraints) and do not include a background class. Though not an apples-to-apples comparison due to dataset differences, Figures 7 and 8 place our models in the context of the literature that inspired them.
