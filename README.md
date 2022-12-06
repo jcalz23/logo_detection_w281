@@ -292,10 +292,10 @@ A statistical approach to generating texture features uses a gray level co-occur
 </p>
 where card indicates the number of elements in the set. 
 
-A set of features can be extracted from the co-occurrence matrix to reduce the dimensionality of the feature space. Figure _ below captures the set of features extracted from C(i,j)
+A set of features can be extracted from the co-occurrence matrix to reduce the dimensionality of the feature space. Figure 3 captures the set of features extracted from C(i,j)
 
 <p align = "center">
-<img src = "./images/co_occurrence.png" >
+<img src = "./images/texture_features.png" >
 </p>
 <p align = "center">
 Fig.3 - Formulas for Texture Features from Co-Occurrence Matrix (from **CITE PAPER**) 
