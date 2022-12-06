@@ -20,7 +20,7 @@ Authors: Luis Chion (lmchion@berkeley.edu), Eric Liu (eliu390@berkeley.edu), Vis
 
 Instructor: Allen Y. Yang
 
-Date: 11/23/2022
+Date: 12/09/2022
 
 
 ---
@@ -152,8 +152,6 @@ Table.1 - Statistics of existing logo detection datasets
 
 </p>
 
-
-
 Prior 2015, logo recognition has used keypoint-based detectors and descriptions such as Bag of quantized SIFT features (BofW SIFT) and Histogram of Gradients (HOG) [[1]](#1).  BofW SIFT is a method in which a histogram of visual words by bucketing SIFT keypoints using Kmeans clustering algorithm.   After this, 1-vs-all linear SVMs is used as classifier for logo recognition. In addition to BoW SIFT, Romberg and Lienhart [[3]](#3) use a feature bundling technique where individual local features are aggregated with features with their spatial neighborhood into bundles.  Also, Romberg et al [[3]](#3) propose to index the relative spatial layout of local features on logo regions by means of a cascaded index.  
 
 Choras [[2]](#2) use general features extraction methods that are application independent such as color, texture, and shape.  These features can be further divided into pixel-level features such as color and location, local features as a result of subdivision of the image band in segments or edges, global features over the entire image or sub-area.  To represent color features, the author uses color moments (mean, variance, skewness) extracted from RGB, HSV and YCrCb color histograms.  Texture is also a powerful descriptor but on its own does not have the capability of finding objects.  Texture can be calculated using different methods such as Fourier power spectra, co-ocurrence matrices, SPCA, Tamura features, and Wold decomposition.  Last, Shape is one of the primitive features for image content description but measuring is difficult.   Shape methods can be divided in region and contour based. While Region-based use the whole area, Contour-based use only info from the contours of an object.
@@ -163,7 +161,7 @@ In recent reasearch, deep learning has emerged as the default standard for logo 
 1. R-CNN is a typical proposals-based approach but it is slow in detecting objects due to its Selective Search (SS) algorithm.  To overcome this, a Faster R-CNN algo was proposed that uses region proposal network (RPN) to generate region proposals.  
 2. In contrast of R-CNN, YOLO proposes the use of an end-to-end neural network that makes prediction of bounding boxes and class probabilities all in one single stage.  At a high level, YOlO divides the images into N grids of dimension SxS.  These grids predict the bounding boxes along with the labels and the probability of the object being present in a cell.  YOLO uses Non Maximal Supression method to exclude the bounding boxes with lower probability scores.  
 3. Single Shot Detector-based models (SSD) uses multi-scale feature maps to detect objects at different scales. It is comparable to YOLO in that it takes only one shot to detect multiple objects present in an image using multibox. Outperforms a comparable state-of-the-art Faster R-CNN and is widely used in vehicle logo detection.
-4. Feature Pyramid Network (FPN) uses also a multiple feature map layers similar to SSD.  It is composed of two pathways : bottom-up and top-down.  The bottom-up is the usual convolutional network for feature extraction.  As we go up on the layer, the spatial resolution decreases but the semantic value increases.  In comparison, SSD only uses top layers of bottom-up pathway for prediction whereas FPN provides a top-down pathway to construct higher resolution layers from a semantic rich layer.
+4. Feature Pyramid Network (FPN) uses a multiple feature map layers similar to SSD.  It is composed of two pathways: bottom-up and top-down.  The bottom-up is the usual convolutional network for feature extraction.  As we go up on the layer, the spatial resolution decreases but the semantic value increases.  In comparison, SSD only uses top layers of bottom-up pathway for prediction whereas FPN provides a top-down pathway to construct higher resolution layers from a semantic rich layer.
 
 Robust and accurate detection is still difficult.  Logos tend to be small in size and maybe difficult to detect them in complex backgrounds (i.e. logo sign on a busy street).  The backgrounds can be very diverse in nature.  Logos can be place in bottles, shirts, cars, billboards and all sorts of shapes and textures (i.e. nike logo in shoes and clothes).  Sub-branding detection can impose additional difficulties when there are subtle differences between parent brands and sub-brands (i.e. coca-cola and diet coke).   There is still plenty of work to do to improve logo detection.  Higher resolution feature maps have been used with sucess but it is too computationally expensive and too slow for real-time applications.
 
@@ -188,7 +186,7 @@ A method I use is after completing the README, I go through the instructions fro
 
 [Logos-32plus](http://www.ivl.disco.unimib.it/activities/logo-recognition/) is a collection of 12,312 real-world photos that contain 32 different logo classes. It is an expansion on the the [FlickrLogos-32 dataset](https://www.uni-augsburg.de/en/fakultaet/fai/informatik/prof/mmc/research/datensatze/flickrlogos/).  Both has the same classes of objects but Logos-32plus has substantially more images.  Logos-32plus is designed to be more representative of the various conditions that logos appear in and more suitable for training keypoint-based approaches to logo recognition. Logos appear in high contrast on approximately planar or cylindrical surfaces with varying degrees of obstruction. To construct this dataset, images were scraped from Flickr and Google Images through a text-based search on image tags.  To increase variability in the data distribution, different queries were put together by concatenating a noun plus the logo name (i.e. "merchandising Becks", "can Becks", "drink Becks"). Scraped images were manually filtered to remove unfocused, blurred, noisy, or duplicate images [1].
 
-We selected 10 logo classes from the 32 in Logos-32plus to use as the total dataset for training and evaluation. Eace image in this dataset is labeled with a single class, and the 10 classes each contain 300 photos on average. Bounding box annotations are provided for each occurrence of a logo in an image; photos may have one or multiple instances of the logo corresponding to the labeled class. In cases where an image contains logos belonging to multiple classes, only logos corresponding to the image class are annotated. The distribution of images and bounding boxes per class are shown in Fig. 1. Note that bounding box counts are significantly larger than image counts due to images containing multiple occurrences of a logo.
+We selected 10 logo classes from the 32 in Logos-32plus to use as the total dataset for training and evaluation. Each image in this dataset is labeled with a single class, and the 10 classes each contain 300 photos on average. Bounding box annotations are provided for each occurrence of a logo in an image; photos may have one or multiple instances of the logo corresponding to the labeled class. In cases where an image contains logos belonging to multiple classes, only logos corresponding to the image class are annotated. The distribution of images and bounding boxes per class are shown in Fig. 1. Note that bounding box counts are significantly larger than image counts due to images containing multiple occurrences of a logo.
 
 
 <p align = "center">
@@ -382,7 +380,7 @@ Fig. 6 - Comparison of F1 score per class across models
 
 Looking across logo classes and models, there are some classes that each model does well on, and some with which each model struggles. Each model has a strong F1 score for UPS, DHL and Starbucks classes; UPS and DHL are both simple and distinct logos, while Starbucks is highly distinct and likely easier for models to differentiate. Adidas and Coca Cola have F1-scores mostly below or near 0.8 for each model; this could be due to the fact that these two brands have greater diversity in the appearance of logos across a set of different products.
 
-Comparing YOLO to the Mixed GFE & Sift model, YOLO performs markedly better for Apple and BMW, and markedly worse for Coca Cola, Heineken and Pepsi. One explanation could be that the former classes are often found on flat surfaces, and the latter are all drinks which are typically found on curved surfaces.
+Comparing YOLO to the Mixed GFE & Sift model, YOLO performs markedly better for Apple and BMW, and markedly worse for Coca Cola, Heineken and Pepsi. One explanation could be that the former classes are often found on flat surfaces, and the latter are all drinks which are typically found on curved surfaces. Additionally, research has shown that YOLO models perform well on smaller objects and in low contrast environments, which apply closely to Apple and BMW [8].
 
 Comparing the Mixed GFE & SIFT model to the SIFT model, the Mixed model provides strong lift in each of the classes with which SIFT struggles most: Apple, BMW, and Pepsi. The remainder of classes are roughly comparable, with the Mixed model slightly outperforming the SIFT model across.
 
@@ -417,7 +415,6 @@ Simone Bianco, Marco Buzzelli, Davide Mazzini and Raimondo Schettini (2017).
 Deep Learning for Logo Recognition. Neurocomputing.
 https://doi.org/10.1016/j.neucom.2017.03.051
 
-
 <a id="2">[2]</a> 
 Choras, Ryszard S.. (2007). Image feature extraction techniques and their applications for CBIR and biometrics systems. 
 International Journal of Biology and Biomedical Engineering.  
@@ -429,18 +426,17 @@ Stefan Romberg and Rainer Lienhart. 2013. Bundle min-hashing for logo recognitio
 <a id="4">[4]</a> 
 Romberg, Stefan & Pueyo, Lluis & Lienhart, Rainer & Zwol, Roelof. (2011). Scalable logo recognition in real-world images. 25. 10.1145/1991996.1992021. https://dl.acm.org/doi/10.1145/1991996.1992021
 
-
 <a id="5">[5]</a> 
 Hou, S., Li, J., Min, W., Hou, Q., Zhao, Y., Zheng, Y., & Jiang, S. (2022). Deep Learning for Logo Detection: A Survey. ArXiv, abs/2210.04399. https://arxiv.org/abs/2210.04399
 
 <a id="6">[6]</a> 
 C. Li, I. Fehérvári, X. Zhao, I. Macedo and S. Appalaraju, "SeeTek: Very Large-Scale Open-set Logo Recognition with Text-Aware Metric Learning," 2022 IEEE/CVF Winter Conference on Applications of Computer Vision (WACV), 2022, pp. 587-596, doi: 10.1109/WACV51458.2022.00066. https://ieeexplore.ieee.org/document/9706752
 
-
 <a id="7">[7]</a> 
 H. Su, S. Gong and X. Zhu, "WebLogo-2M: Scalable Logo Detection by Deep Learning from the Web," 2017 IEEE International Conference on Computer Vision Workshops (ICCVW), 2017, pp. 270-279, doi: 10.1109/ICCVW.2017.41. https://ieeexplore.ieee.org/abstract/document/8265251
 
-
+<a id="8">[8]</a> 
+Shuo Yang, Junxing Zhang, Chunjuan Bo, Meng Wang, Lijun Chen (2018). "Fast vehicle logo detection in complex scenes," Optics & Laser Technology Volume 110, 2019, pp.196-210, doi: 10.1016/j.optlastec.2018.08.007. https://www.sciencedirect.com/science/article/abs/pii/S0030399218310715
 
 
 <!-- <div id="refs"></div> -->
