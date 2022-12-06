@@ -384,11 +384,29 @@ Comparing YOLO to the Mixed GFE & Sift model, YOLO performs markedly better for 
 
 Comparing the Mixed GFE & SIFT model to the SIFT model, the Mixed model provides strong lift in each of the classes with which SIFT struggles most: Apple, BMW, and Pepsi. The remainder of classes are roughly comparable, with the Mixed model slightly outperforming the SIFT model across.
 
-
 ## Image-Level Error Analysis
 Suggested flow: Get confusion matrix for YOLO, find the class that is most commonly confused for another (e.g., Apple confused for Adidas). Then pick out some cases where Apple was predicted to be Adidas. 
 
 @Luis, we should move the images in yolo section down to this part of the results section
+
+## State of the Art Comparison
+As mentioned in the Data section, our models are developed on a subset of classes in the Logos32+ dataset (compute constraints) and do not include a background class. Though not an apples-to-apples comparison due to dataset differences, Figures 7 and 8 place our models in the context of the literature that inspired them.
+
+<p align = "center">
+<img src = "./images/sota_bow_sift_comparison.png" >
+</p>
+<p align = "center">
+Fig. 7 - Comparison with BoW SIFT in Romberg et al. [3]
+</p>
+
+<p align = "center">
+<img src = "./images/sota_cnn_comparison.png" >
+</p>
+<p align = "center">
+Fig. 8 - Comparison with CNN in Bianco et al. [1]
+</p>
+
+The BoW SIFT model fit on FlickrLogos-32 dataset in Romberg et al. achieves much higher performance than our BoW SIFT fit on the subset of classes in Logos32+. Additionally, the CNN model fit on FlickrLogos-32 dataset in Bianco et al. also outperforms our YOLO model fit on the subset of classes in Logos32+. A direct comparison is challenging without fitting our models on the same data; however, we hypothesize that differences can be primarily attributed to our model working with a subset of classes, not including a background class, and not utilizing data augmentation. 
 
 
 # Challenges and Next Steps
