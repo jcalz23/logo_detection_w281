@@ -285,7 +285,7 @@ where the color of the pixel (*x, y*) is represented by *f<sub>k</sub>(x, y)*. F
 
 
 ### Texture
-Texture is another important property of a logo; while they do not uniquely describe a logo, they may help differentiate textured logos from non-textures ones. For example, FedEx logos are typically found in print (plastic) or on vehicle decals (metal), and Adidas logos are frequently found on clothing and shoes (fabric, leather).
+Texture is another important property of a logo; while it does not uniquely describe a logo, it may help differentiate textured logos from non-textures ones. For example, FedEx logos are typically found in print (plastic) or on vehicle decals (metal), and Adidas logos are frequently found on clothing and shoes (cotton, leather).
 
 A statistical approach to generating texture features uses a gray level co-occurrence matrix, which is a histogram of co-occurring grayscale values (i, j) at a given distance d (defined in polar coordinates) over an image. The co-occurrence matrix C(i, j) is defined by
 <p align = "center">
@@ -304,11 +304,13 @@ A set of features can be extracted from the co-occurrence matrix to reduce the d
 Fig.3 - Formulas for Texture Features from Co-Occurrence Matrix (from **CITE PAPER**) 
 </p>
 
+The implementation of these non-learned features can be found in [general_feature_extraction.ipynb](./general_feature_extraction.ipynb).
+
 
 ## Mixed Models from Non-Learned Features
-With the non-learned features described above, we fit a set of models on each of three feature sets: SIFT BOW only, other non-learned features only (shape, color texture), and the combination of SIFT BOW and other non-learned features. The goal of this exercise was to understand how effective each of the feature sets are alone, and if any performance lift is achieved by training on them jointly. 
+With the non-learned features described above, we fit a set of models on each of three feature sets: BoW SIFT only, GFE only (shape, color texture), and the combination of BoW SIFT and GFE. The goal of this exercise is to understand how effective each of the feature sets are alone, and if any performance lift is achieved by training on them jointly. 
 
-For each feature set explored, three model forms were fit, tuned (using validated set), and evaluated:  Support Vector Machine, K-Nearest Neighbors, and Multinomial Logistic Regression. The validation set was used to tune the hyperparameters of each model. The top model configurations are displayed in Table _ below. 
+For each feature set explored, three model forms were fit, tuned (using validated set), and evaluated:  Support Vector Machine, K-Nearest Neighbors, and Multinomial Logistic Regression. The validation set was used to tune the hyperparameters of each model. The top model configurations are displayed in Figure 4 below.
 <p align = "center">
 <img src = "./images/gfe_model_descriptions.png" >
 </p>
@@ -316,10 +318,10 @@ For each feature set explored, three model forms were fit, tuned (using validate
 Fig.4 - Top Model Configuration per Feature Set
 </p>
 
-The results of each model are displayed and discussed in the results section.
+The implementation and evaluation of each model in Figure 4 can be found in [gfe_modeling.ipynb](./gfe_modeling.ipynb). The results of each model are displayed and discussed in the results section.
+
 
 ## YOLO
-
 YOLO is a deep learning algo for real-time object detection.  It is capable not only to provide the exact location of an object in an image (bounding boxes) but also able to identify it (classification).  It uses a combination of approaches such as fast R-CNN, Retina-Net and Single-Shot MultiBox DEtector (SSD).  YOLO has become the standard in object recognition due to its speed, detection accuracy, good generalization and the fact that is open-source.
 
 In preparation for the training, we loaded 3,062 groundtruth images into Roboflow using the same train test validation partition (70%-15%-15%). After uploading, images were auto oriented so images are display using the correct EXIF orientation stored in the metadata.  Also, images are resized to 640x640 pixels to improve training performance.  No further data augmentations were applied.
@@ -366,12 +368,12 @@ Ultimately, the Yolo model was the top performing classifier on the test set. Fi
 Fig. 5 - Comparison of model performance
 </p>
 
-It was expected that the YOLO model would be the strongest performer as it is known to deliver state of the art results across many image classification tasks. Whereas the GFE models are fit on deterministic features extracted from images, the YOLO model is able to learn abstract features that apply specifically to the logo domain in fine tuning. However, the Mixed GFE model is competitive with YOLO, which highlights the signal provided by the BoW SIFT and other non-learned features.
+It was expected that the YOLO model would be the strongest performer as it is known to deliver state of the art results across many image classification tasks. Whereas the GFE models are fit on deterministic features extracted from images, the YOLO model is able to learn abstract features in fine tuning that apply specifically to the logo domain. However, the Mixed GFE model is competitive with YOLO, which highlights the signal provided by the BoW SIFT and other non-learned features.
 
-The top performing model that uses only non-learned features is the Mixed GFE model. We hypothesized that the BoW SIFT features alone would deliver the top performance; however, the additional non-learned features provided additional signal. The union of all non-learned features makes the model more complex and the fact that improved performance tells us that the SIFT model is not complex enough and underfit the data.
+The top performing model that uses only non-learned features is the Mixed GFE model. We hypothesized that the BoW SIFT features alone would deliver the top performance; however, the additional non-learned features provided additional signal. The union of all non-learned features makes the model more complex and the fact that improved performance tells us that the SIFT model is not complex enough and underfit the data. It is important to keep in mind that BoW SIFT features were limited by compute constraints and could have increased complexity itself, aside from the other GFE features.
 
 ## Class-Level Performance
-In multiclass classification problems, it is crucial to understand the model performance across classes, rather than just the aggregate measures. Figure 6 shows the class-level performances of the YOLO, Mixed GFE, and BoW SIFT models.
+In multi-class classification problems, it is crucial to understand the model performance across classes, rather than just the aggregate measures. Figure 6 shows the class-level performances of the YOLO, Mixed GFE, and BoW SIFT models.
 
 <p align = "center">
 <img src = "./images/class_level_f1_comparison.png" >
@@ -384,14 +386,16 @@ Looking across logo classes and models, there are some classes that each model d
 
 Comparing YOLO to the Mixed GFE & Sift model, YOLO performs markedly better for Apple and BMW, and markedly worse for Coca Cola, Heineken and Pepsi. One explanation could be that the former classes are often found on flat surfaces, and the latter are all drinks which are typically found on curved surfaces. Additionally, research has shown that YOLO models perform well on smaller objects and in low contrast environments, which apply closely to Apple and BMW [8].
 
-Comparing the Mixed GFE & SIFT model to the SIFT model, the Mixed model provides strong lift in each of the classes with which SIFT struggles most: Apple, BMW, and Pepsi. The remainder of classes are roughly comparable, with the Mixed model slightly outperforming the SIFT model across.
+Comparing the Mixed GFE & SIFT model to the SIFT model, the Mixed model provides strong lift in each of the classes with which the BoW SIFT struggles most: Apple, BMW, and Pepsi. One explanation could be that each of these logos have few corners and thus SIFT might struggle to consistently identify keypoints. The color, shape and texture features are more valuable when detecting keypoints is more difficult and less consistent. The remainder of classes are roughly comparable, with the Mixed model slightly outperforming the SIFT model across.
 
 ## Image-Level Error Analysis
-
+For the top performing YOLO V7 model, we picked out several examples of misclassified test images to further understand the limitations and weaknesses of the model. This exercise showed that the YOLO model made mistakes more frequently in cases with small, blurry, and occluded images as well as cases of unusual logos that deviate from the common case (such as the Heineken pint image).
 
 <!-- :-------------------------:|:-------------------------:  |:-------------------------: |:-------------------------: |
 <img src="./images/blurry_pepsi.jpg"  width=70% height=70%>  |  <img src="./images/half_starbucks.jpg"  width=70% height=70%>  |  <img src="./images/not_cocacola.jpg"  width=70% height=70%>   |  <img src="./images/not_detected_bmw.jpg"  width=70% height=70%>   |
 <img src="./images/not_detected_heineken.jpg"  width=70% height=70%>  |  <img src="./images/not_heineken.jpg"  width=70% height=70%>  |  <img src="./images/other_heineken.jpg"  width=70% height=70%>   |  <img src="./images/warped_coke.jpg"  width=70% height=70%>   | -->
+
+
 
 
 <div id="image-table">
@@ -457,7 +461,7 @@ Comparing the Mixed GFE & SIFT model to the SIFT model, the Mixed model provides
 
 
 ## State of the Art Comparison
-As mentioned in the Data section, our models are developed on a subset of classes in the Logos32+ dataset (compute constraints) and do not include a background class. Though not an apples-to-apples comparison due to dataset differences, Figures 7 and 8 place our models in the context of the literature that inspired them.
+As mentioned in the Data section, our models are developed on a subset of classes in the Logos32+ dataset (due to compute constraints) and also do not include a background class. Though not an apples-to-apples comparison due to dataset differences, Figures 7 and 8 place our models in the context of the literature that inspired them.
 
 <p align = "center">
 <img src = "./images/sota_bow_sift_comparison.png" >
