@@ -577,12 +577,12 @@ As an extension to this project, we have identified a few next steps:
 * Execute Yolo algorithm on the dataset by enabling data augmentation options 
 
 
-# Appendix 1 : additional YOLO results
+# Appendix 1 : Additional YOLO metrics
 
 
 
 <p align = "center">
-<img src = "./images/confusion_matrix.png" width="30%" height="30%" >
+<img src = "./images/confusion_matrix.png" width="65%" height="65%" >
 </p>
 <p align = "center">
 YOLOv7 Test Confusion Matrix
@@ -590,7 +590,7 @@ YOLOv7 Test Confusion Matrix
 </p>
 
 <p align = "center">
-<img src = "./images/PR_curve.png" width="30%" height="30%" >
+<img src = "./images/PR_curve.png" width="60%" height="60%" >
 </p>
 <p align = "center">
 YOLOv7 Test PR Curve
@@ -598,7 +598,7 @@ YOLOv7 Test PR Curve
 </p>
 
 <p align = "center">
-<img src = "./images/F1_curve.png" width="30%" height="30%" >
+<img src = "./images/F1_curve.png" width="60%" height="60%" >
 </p>
 <p align = "center">
 YOLOv7 Test F1 Curve
@@ -606,7 +606,7 @@ YOLOv7 Test F1 Curve
 </p>
 
 <p align = "center">
-<img src = "./images/P_curve.png" width="30%" height="30%" >
+<img src = "./images/P_curve.png" width="60%" height="60%" >
 </p>
 <p align = "center">
 YOLOv7 Test P Curve
@@ -616,7 +616,7 @@ YOLOv7 Test P Curve
 </p>
 
 <p align = "center">
-<img src = "./images/P_curve.png" width="30%" height="30%" >
+<img src = "./images/P_curve.png" width="60%" height="60%" >
 </p>
 <p align = "center">
 YOLOv7 Test R Curve
