@@ -480,13 +480,13 @@ For the top performing YOLO V7 model, we picked out several examples of misclass
     <table>
        <tr>
     	      <td style="padding:10px">
-        	    Undetected PEPSI due to blur
+        	    Undetected PEPSI with blur
       	    </td>
             <td style="padding:10px">
             	Detected partial Starbucks
             </td>
             <td style="padding:10px">
-            	Shouldn't have detected Coca-Cola
+            	Shouldn't have detected as Coca-Cola
             </td>
             <td style="padding:10px">
             	Not detected small BMW
@@ -511,7 +511,7 @@ For the top performing YOLO V7 model, we picked out several examples of misclass
         	    Undetected small Heineken sign
       	    </td>
             <td style="padding:10px">
-            	Shouldn't have detected Heineken
+            	Shouldn't have detected as Heineken
             </td>
             <td style="padding:10px">
             	Not detected different Heineken logos
