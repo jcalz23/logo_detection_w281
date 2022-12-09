@@ -106,10 +106,10 @@ Logo recognition can be considered a subset of object recognition.  In general, 
 To prepare data for classification, we applied several pre-processing methods including Contrast Limited Adaptive Histogram Equalization (CLAHE) algorithm, data augmentation and class balancing.  
 
 To classify logos, we built three 1-vs-all linear SVMs models and one CNN model :
-1. Bag of Words SIFT.
+1. Bag of Words SIFT.  This model was the standard prior 2015 and has good performance.
 2. General Feature Extraction Model.  We used Choras [[2]](#2) to extract color, texture and shape features from images.
 3. Combined Bag of Words SIFT and General Feature Extraction Model
-4. YOLO version 7
+4. YOLO version 7.  Top performer among DL models for small and large datasets along with MFDNet and OSF-Logo.  Also, quite fast during training and detection.
 
 For the manual models (1-3), we only concentrated on the second task of the logo detection process which is the classification algorithm.  Given that the complexity of techniques  to identify a logo in an image, we did not think it was feasible to complete the implementation on time.  Instead, we used the ground truth bounding boxes in [Logos-32plus](http://www.ivl.disco.unimib.it/activities/logo-recognition/) as our starting point.
 
@@ -159,6 +159,40 @@ In recent reasearch, deep learning has emerged as the default standard for logo 
 3. Single Shot Detector-based models (SSD) uses multi-scale feature maps to detect objects at different scales. It is comparable to YOLO in that it takes only one shot to detect multiple objects present in an image using multibox. Outperforms a comparable state-of-the-art Faster R-CNN and is widely used in vehicle logo detection.
 4. Feature Pyramid Network (FPN) uses a multiple feature map layers similar to SSD.  It is composed of two pathways: bottom-up and top-down.  The bottom-up is the usual convolutional network for feature extraction.  As we go up on the layer, the spatial resolution decreases but the semantic value increases.  In comparison, SSD only uses top layers of bottom-up pathway for prediction whereas FPN provides a top-down pathway to construct higher resolution layers from a semantic rich layer.
 
+
+The tables below show State-Of-The-Art Mean Average Precisions (mAP) for small, medium, and large dataset.  We can observe that mAP decreases with the size of dataset.  Interestingly, for medium and small datasets, Scaled YOLOv4 performs better than the more conventional Faster R-CNN.
+
+<center>
+<div id="sota-table">
+    <table>
+         <tr>
+    	      <td style="padding:10px">
+        	    Small dataset performance (FlickrLogos-32)
+      	    </td>
+            <td style="padding:8px">
+            	Medium dataset performance (QMUL-OpenLogo)
+            </td>
+            <td style="padding:8px">
+            	Large dataset performance (Open Brands)
+            </td>
+        </tr>
+        <tr>
+    	      <td style="padding:10px">
+        	    <img src="./images/flick32_bench.jpg"  width=70% height=70%/>
+      	    </td>
+            <td style="padding:8px">
+            	<img src="./images/qmul_open_logo_bench.jpg"  width=70% height=70%/>
+            </td>
+            <td style="padding:8px">
+            	<img src="./images/open_brands_bench.jpg"  width=70% height=70%/>
+            </td>
+        </tr>
+    </table>
+</div>
+
+</center>
+
+
 Robust and accurate detection is still difficult.  Logos tend to be small in size and maybe difficult to detect them in complex backgrounds (i.e. logo sign on a busy street).  The backgrounds can be very diverse in nature.  Logos can be place in bottles, shirts, cars, billboards and all sorts of shapes and textures (i.e. nike logo in shoes and clothes).  Sub-branding detection can impose additional difficulties when there are subtle differences between parent brands and sub-brands (i.e. coca-cola and diet coke).   There is still plenty of work to do to improve logo detection.  Higher resolution feature maps have been used with sucess but it is too computationally expensive and too slow for real-time applications.
 
 Some future research directions include:  Lightweight logo detection to reduce model complexity while mantaining the same accuracy. Weekly supervised logo detection to automate the annotation not only reduces the cost but improves the generalization and robustness of the model.  Video logo detection which provides more information to business by adding correlation between consecutive images.  Tiny logo detection with not enough pixel information for recognition.  Long tail logo detection for up and coming small businesses where you cannot find enough image samples.  Incremental logo detection where we assume an open dataset where new logo and logo variations emerge every day.
@@ -185,8 +219,8 @@ A method I use is after completing the README, I go through the instructions fro
 We selected 10 logo classes from the 32 in Logos-32plus to use as the total dataset for training and evaluation. Each image in this dataset is labeled with a single class, and the 10 classes each contain 300 photos on average. Bounding box annotations are provided for each occurrence of a logo in an image; photos may have one or multiple instances of the logo corresponding to the labeled class. In cases where an image contains logos belonging to multiple classes, only logos corresponding to the image class are annotated. The distribution of images and bounding boxes per class are shown in Fig. 1. Note that bounding box counts are significantly larger than image counts due to images containing multiple occurrences of a logo.
 
 
-<p align = "center">
-<img src = "./images/class_counts.png" >
+<p align = "center" >
+<img src = "./images/dataset_table_replace.jpg" width=40% height=40% >
 </p>
 <p align = "center">
 Fig.1 - Distribution of logo images and bounding boxes per class
@@ -332,7 +366,7 @@ The implementation of these non-learned features can be found in [general_featur
 ## Mixed Models from Non-Learned Features
 With the non-learned features described above, we fit a set of models on each of three feature sets: BoW SIFT only, GFE only (shape, color texture), and the combination of BoW SIFT and GFE. The goal of this exercise is to understand how effective each of the feature sets are alone, and if any performance lift is achieved by training on them jointly. 
 
-For each feature set explored, three model forms were fit, tuned (using validated set), and evaluated:  Support Vector Machine, K-Nearest Neighbors, and Multinomial Logistic Regression. The validation set was used to tune the hyperparameters of each model. The top model configurations are displayed in Figure 4 below.
+For each feature set explored, we selected Support Vector Machine algorithm for classification based on Romberg et al work. The validation set was used to tune the hyperparameters of each model. The model configurations are displayed in Table 1 below.
 <p align = "center">
 <img src = "./images/gfe_model_descriptions.png" >
 </p>
