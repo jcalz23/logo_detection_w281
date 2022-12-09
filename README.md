@@ -79,7 +79,7 @@ Here is a sample TOC(*wow! such cool!*) that is actually the TOC for this README
   - [Image-Level Error Analysis](#image-level-error-analysis)
   - [State of the Art Comparison](#state-of-the-art-comparison)
 - [Challenges and Next Steps](#challenges-and-next-steps)
-- [Appendix 1 : additional YOLO results](#appendix-1--additional-yolo-results)
+- [Appendix 1 : Additional YOLO Metrics](#appendix-1--additional-yolo-metrics)
 - [References](#references)
 
 <!-- - [Usage](#usage)
@@ -99,20 +99,20 @@ Here is a sample TOC(*wow! such cool!*) that is actually the TOC for this README
 These days brand logos can be found almost everywhere from images produced by IoT devices (cars and survellaince cameras) to social media postings (Facebook, Tiktok, Instagram).  As such, logo recognition is a fundamental problem for computer vision and can be used in the following applications:
 - Copyright and Trademark compliance :  to detect patent infrigment by identifying logo patterns and colors from a well recognized brand
 - Brand related statistics :  to understand consumer for targeted advertising.  Brand protection, recomendation and identification
-- Intelligent traffic-control systems :  to recognize a stop or yield sign using camera feed from vehicles
+- Intelligent traffic-control systems :  to recognize a specific symbol like stop or yield sign using camera feed from vehicles
 - Document categorization : to detect logo appearing in documents and use it as a statement of ownership
 
 Logo recognition can be considered a subset of object recognition.  In general, the majority of the logos are two dimensional objects containing stylized shapes, no texture and primary colors.  In some cases, logos can contain text (i.e. Fedex logo) or can be placed in different surfaces (i.e. Coca-Cola bottle or Adidas shoes).  The logo detection process can be split in two tasks:  determining the location of the logo (bounding box) and logo classification.  Finding the logo in a real world image is a challenging task.  It is desirable to have a incremental logo model learning without exhaustive manual labelling of increasing data expansion [[5]](#5). Also, logos can appear in highly diverse contexts, scales, changes in illumination, size, resolution, and perspectives [[6]](#6)
 
 To prepare data for classification, we applied several pre-processing methods including Contrast Limited Adaptive Histogram Equalization (CLAHE) algorithm, data augmentation and class balancing.  
 
-To classify logos, we built three 1-vs-all linear SVMs models and one CNN model :
+To classify logos, we built three 1-vs-all linear SVMs models and one CNN (YOLO) model :
 1. Bag of Words SIFT.  This model was the standard prior 2015 and has good performance.
-2. General Feature Extraction Model.  We used Choras [[2]](#2) to extract color, texture and shape features from images.
-3. Combined Bag of Words SIFT and General Feature Extraction Model
+2. General Feature Extraction Model.  We referred to Choras [[2]](#2) to extract color, texture and shape features from images.
+3. Mixed model with a combination of Bag of Words SIFT and General Feature Extraction Model
 4. YOLO version 7.  Top performer among DL models for small and large datasets along with MFDNet and OSF-Logo.  Also, quite fast during training and detection.
 
-For the manual models (1-3), we only concentrated on the second task of the logo detection process which is the classification algorithm.  Given that the complexity of techniques  to identify a logo in an image, we did not think it was feasible to complete the implementation on time.  Instead, we used the ground truth bounding boxes in [Logos-32plus](http://www.ivl.disco.unimib.it/activities/logo-recognition/) as our starting point.
+For the manual models (1-3), we only concentrated on the second task of the logo detection process which is the classification algorithm.  Given that the complexity of techniques  to identify a logo in an image, we did not think it was feasible to complete the implementation within the course timeline.  We used the ground truth bounding boxes provided with the [Logos-32plus](http://www.ivl.disco.unimib.it/activities/logo-recognition/) dataset as our starting point. The bounding box coordinates were used for training both manual and YOLO models. The full image was used in YOLO model during inference without providing the bounding box coordinates. During inference in the manual model, the extracted bounding box was used for predictions.
 
    
 <!-- Logos are persistent advertisements for a brand that may be mobile (printed on consumer goods) or immobile (storefront). In a streetview image of an area, visible logos potentially contain information about brand market share and the area's socioeconomic status. This idea can be combined with a rapidly growing resource: all kinds of devices that are equipped with cameras which constantly stream visual data to the cloud. Since this data can be automatically location-tagged, this is a rich data source for fraud detection, predicting consumer trends, or analyzing the socioeconomic status of an area based on logo type and frequency. This requires a computer vision algorithm that can identify unlabeled logos in a visual scene. -->
