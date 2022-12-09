@@ -1,13 +1,4 @@
-﻿---
-﻿﻿---
-title : "Logo Detection"
-output:   
-    md_document:
-        variant: markdown_github
-bibliography: "references.bib"
-#nocite: '@*'
-​---
----
+﻿
 
 <!-- Add banner here -->
 
@@ -20,7 +11,7 @@ Authors: Luis Chion (lmchion@berkeley.edu), Eric Liu (eliu390@berkeley.edu), Vis
 
 Instructor: Allen Y. Yang
 
-Date: 11/23/2022
+Date: 12/09/2022
 
 
 ---
@@ -82,7 +73,12 @@ Here is a sample TOC(*wow! such cool!*) that is actually the TOC for this README
   - [Mixed Models from Non-Learned Features](#mixed-models-from-non-learned-features)
   - [YOLO](#yolo)
 - [Results and Discussion](#results-and-discussion)
+  - [Overall Performance](#overall-performance)
+  - [Class-Level Performance](#class-level-performance)
+  - [Image-Level Error Analysis](#image-level-error-analysis)
+  - [State of the Art Comparison](#state-of-the-art-comparison)
 - [Challenges and Next Steps](#challenges-and-next-steps)
+- [Appendix 1 : additional YOLO results](#appendix-1--additional-yolo-results)
 - [References](#references)
 
 <!-- - [Usage](#usage)
@@ -100,20 +96,20 @@ Here is a sample TOC(*wow! such cool!*) that is actually the TOC for this README
 
 
 These days brand logos can be found almost everywhere from images produced by IoT devices (cars and survellaince cameras) to social media postings (Facebook, Tiktok, Instagram).  As such, logo recognition is a fundamental problem for computer vision and can be used in the following applications:
-- Copyright and Trademark compliance :  to detect patent infrigment by identifying logo patterns and colors as a well recognized brand
-- Brand related statistics :  to understand consumer for targetted advertising.  Brand protection, recomendation and identification
-- Intelligent traffic-control systems :  to recognize a stop sign  using camera feed from vehicles
+- Copyright and Trademark compliance :  to detect patent infrigment by identifying logo patterns and colors from a well recognized brand
+- Brand related statistics :  to understand consumer for targeted advertising.  Brand protection, recomendation and identification
+- Intelligent traffic-control systems :  to recognize a stop or yield sign using camera feed from vehicles
 - Document categorization : to detect logo appearing in documents and use it as a statement of ownership
 
 Logo recognition can be considered a subset of object recognition.  In general, the majority of the logos are two dimensional objects containing stylized shapes, no texture and primary colors.  In some cases, logos can contain text (i.e. Fedex logo) or can be placed in different surfaces (i.e. Coca-Cola bottle or Adidas shoes).  The logo detection process can be split in two tasks:  determining the location of the logo (bounding box) and logo classification.  Finding the logo in a real world image is a challenging task.  It is desirable to have a incremental logo model learning without exhaustive manual labelling of increasing data expansion [[5]](#5). Also, logos can appear in highly diverse contexts, scales, changes in illumination, size, resolution, and perspectives [[6]](#6)
 
-To prepare data for classification, we applied several pre-processing methods such Contrast Limited Adaptive Histogram Equalization (CLAHE) algorithm, data augmentation and class balancing.  
+To prepare data for classification, we applied several pre-processing methods including Contrast Limited Adaptive Histogram Equalization (CLAHE) algorithm, data augmentation and class balancing.  
 
 To classify logos, we built three 1-vs-all linear SVMs models and one CNN model :
-1. Bag of Words SIFT.
+1. Bag of Words SIFT.  This model was the standard prior 2015 and has good performance.
 2. General Feature Extraction Model.  We used Choras [[2]](#2) to extract color, texture and shape features from images.
 3. Combined Bag of Words SIFT and General Feature Extraction Model
-4. YOLO version 5
+4. YOLO version 7.  Top performer among DL models for small and large datasets along with MFDNet and OSF-Logo.  Also, quite fast during training and detection.
 
 For the manual models (1-3), we only concentrated on the second task of the logo detection process which is the classification algorithm.  Given that the complexity of techniques  to identify a logo in an image, we did not think it was feasible to complete the implementation on time.  Instead, we used the ground truth bounding boxes in [Logos-32plus](http://www.ivl.disco.unimib.it/activities/logo-recognition/) as our starting point.
 
@@ -152,8 +148,6 @@ Table.1 - Statistics of existing logo detection datasets
 
 </p>
 
-
-
 Prior 2015, logo recognition has used keypoint-based detectors and descriptions such as Bag of quantized SIFT features (BofW SIFT) and Histogram of Gradients (HOG) [[1]](#1).  BofW SIFT is a method in which a histogram of visual words by bucketing SIFT keypoints using Kmeans clustering algorithm.   After this, 1-vs-all linear SVMs is used as classifier for logo recognition. In addition to BoW SIFT, Romberg and Lienhart [[3]](#3) use a feature bundling technique where individual local features are aggregated with features with their spatial neighborhood into bundles.  Also, Romberg et al [[3]](#3) propose to index the relative spatial layout of local features on logo regions by means of a cascaded index.  
 
 Choras [[2]](#2) use general features extraction methods that are application independent such as color, texture, and shape.  These features can be further divided into pixel-level features such as color and location, local features as a result of subdivision of the image band in segments or edges, global features over the entire image or sub-area.  To represent color features, the author uses color moments (mean, variance, skewness) extracted from RGB, HSV and YCrCb color histograms.  Texture is also a powerful descriptor but on its own does not have the capability of finding objects.  Texture can be calculated using different methods such as Fourier power spectra, co-ocurrence matrices, SPCA, Tamura features, and Wold decomposition.  Last, Shape is one of the primitive features for image content description but measuring is difficult.   Shape methods can be divided in region and contour based. While Region-based use the whole area, Contour-based use only info from the contours of an object.
@@ -163,7 +157,41 @@ In recent reasearch, deep learning has emerged as the default standard for logo 
 1. R-CNN is a typical proposals-based approach but it is slow in detecting objects due to its Selective Search (SS) algorithm.  To overcome this, a Faster R-CNN algo was proposed that uses region proposal network (RPN) to generate region proposals.  
 2. In contrast of R-CNN, YOLO proposes the use of an end-to-end neural network that makes prediction of bounding boxes and class probabilities all in one single stage.  At a high level, YOlO divides the images into N grids of dimension SxS.  These grids predict the bounding boxes along with the labels and the probability of the object being present in a cell.  YOLO uses Non Maximal Supression method to exclude the bounding boxes with lower probability scores.  
 3. Single Shot Detector-based models (SSD) uses multi-scale feature maps to detect objects at different scales. It is comparable to YOLO in that it takes only one shot to detect multiple objects present in an image using multibox. Outperforms a comparable state-of-the-art Faster R-CNN and is widely used in vehicle logo detection.
-4. Feature Pyramid Network (FPN) uses also a multiple feature map layers similar to SSD.  It is composed of two pathways : bottom-up and top-down.  The bottom-up is the usual convolutional network for feature extraction.  As we go up on the layer, the spatial resolution decreases but the semantic value increases.  In comparison, SSD only uses top layers of bottom-up pathway for prediction whereas FPN provides a top-down pathway to construct higher resolution layers from a semantic rich layer.
+4. Feature Pyramid Network (FPN) uses a multiple feature map layers similar to SSD.  It is composed of two pathways: bottom-up and top-down.  The bottom-up is the usual convolutional network for feature extraction.  As we go up on the layer, the spatial resolution decreases but the semantic value increases.  In comparison, SSD only uses top layers of bottom-up pathway for prediction whereas FPN provides a top-down pathway to construct higher resolution layers from a semantic rich layer.
+
+
+The tables below show State-Of-The-Art Mean Average Precisions (mAP) for small, medium, and large dataset.  We can observe that mAP decreases with the size of dataset.  Interestingly, for medium and small datasets, Scaled YOLOv4 performs better than the more conventional Faster R-CNN.
+
+<center>
+<div id="sota-table">
+    <table>
+         <tr>
+    	      <td style="padding:10px">
+        	    Small dataset performance (FlickrLogos-32)
+      	    </td>
+            <td style="padding:8px">
+            	Medium dataset performance (QMUL-OpenLogo)
+            </td>
+            <td style="padding:8px">
+            	Large dataset performance (Open Brands)
+            </td>
+        </tr>
+        <tr>
+    	      <td style="padding:10px">
+        	    <img src="./images/flick32_bench.jpg"  width=70% height=70%/>
+      	    </td>
+            <td style="padding:8px">
+            	<img src="./images/qmul_open_logo_bench.jpg"  width=70% height=70%/>
+            </td>
+            <td style="padding:8px">
+            	<img src="./images/open_brands_bench.jpg"  width=70% height=70%/>
+            </td>
+        </tr>
+    </table>
+</div>
+
+</center>
+
 
 Robust and accurate detection is still difficult.  Logos tend to be small in size and maybe difficult to detect them in complex backgrounds (i.e. logo sign on a busy street).  The backgrounds can be very diverse in nature.  Logos can be place in bottles, shirts, cars, billboards and all sorts of shapes and textures (i.e. nike logo in shoes and clothes).  Sub-branding detection can impose additional difficulties when there are subtle differences between parent brands and sub-brands (i.e. coca-cola and diet coke).   There is still plenty of work to do to improve logo detection.  Higher resolution feature maps have been used with sucess but it is too computationally expensive and too slow for real-time applications.
 
@@ -188,11 +216,11 @@ A method I use is after completing the README, I go through the instructions fro
 
 [Logos-32plus](http://www.ivl.disco.unimib.it/activities/logo-recognition/) is a collection of 12,312 real-world photos that contain 32 different logo classes. It is an expansion on the the [FlickrLogos-32 dataset](https://www.uni-augsburg.de/en/fakultaet/fai/informatik/prof/mmc/research/datensatze/flickrlogos/).  Both has the same classes of objects but Logos-32plus has substantially more images.  Logos-32plus is designed to be more representative of the various conditions that logos appear in and more suitable for training keypoint-based approaches to logo recognition. Logos appear in high contrast on approximately planar or cylindrical surfaces with varying degrees of obstruction. To construct this dataset, images were scraped from Flickr and Google Images through a text-based search on image tags.  To increase variability in the data distribution, different queries were put together by concatenating a noun plus the logo name (i.e. "merchandising Becks", "can Becks", "drink Becks"). Scraped images were manually filtered to remove unfocused, blurred, noisy, or duplicate images [1].
 
-We selected 10 logo classes from the 32 in Logos-32plus to use as the total dataset for training and evaluation. Eace image in this dataset is labeled with a single class, and the 10 classes each contain 300 photos on average. Bounding box annotations are provided for each occurrence of a logo in an image; photos may have one or multiple instances of the logo corresponding to the labeled class. In cases where an image contains logos belonging to multiple classes, only logos corresponding to the image class are annotated. The distribution of images and bounding boxes per class are shown in Fig. 1. Note that bounding box counts are significantly larger than image counts due to images containing multiple occurrences of a logo.
+We selected 10 logo classes from the 32 in Logos-32plus to use as the total dataset for training and evaluation. Each image in this dataset is labeled with a single class, and the 10 classes each contain 300 photos on average. Bounding box annotations are provided for each occurrence of a logo in an image; photos may have one or multiple instances of the logo corresponding to the labeled class. In cases where an image contains logos belonging to multiple classes, only logos corresponding to the image class are annotated. The distribution of images and bounding boxes per class are shown in Fig. 1. Note that bounding box counts are significantly larger than image counts due to images containing multiple occurrences of a logo.
 
 
-<p align = "center">
-<img src = "./images/class_counts.png" >
+<p align = "center" >
+<img src = "./images/dataset_table_replace.jpg" width=40% height=40% >
 </p>
 <p align = "center">
 Fig.1 - Distribution of logo images and bounding boxes per class
@@ -247,7 +275,7 @@ SIFT or Scale Invariant Feature Transform is a feature detection algorithm in Co
 <img src = "./images/sift_bagofwords.png" width="600" height="500">
 </p>
 <p align = "center">
-Fig.1 - Bag of Words SIFT diagram from https://heraqi.blogspot.com/2017/03/BoW.html
+Fig.3 - Bag of Words SIFT diagram from https://heraqi.blogspot.com/2017/03/BoW.html
 </p>
 
 
@@ -256,9 +284,39 @@ The step by step implementation of SIFT and classification algorithms on the log
 
 ## General Feature Extraction (GFE)
 
-Along with the BoW SIFT features, additional non-learned features were extracted from the image bounding boxes, these include: shape, color and texture feautures. The motivation is to understand if model performance improves when fit on BoW SIFT and additional features. 
+Along with the BoW SIFT features, additional non-learned features were extracted from the image bounding boxes, these include: shape, color and texture feautures. The motivation is to understand if model performance improves when fit on BoW SIFT and additional features.  
 
 ### Shape 
+
+Image moments are used to describe the shape of an object in an image.  These moments are described in the 1962's Ming-Kuei paper [[3]](#3) and capture information like the are of the object, the centroid and the orientation.  Hu moments should not be used in situations where there is noise, occlusion or a lack of clean segmentation since it is very hard to get a dependable and repeatable centroid. Hu moments are invariant to translation, scale, rotation and reflection.  To calculate Hu moments, we first used Canny to calculate the edges of a log with threshold 1 and 2 set to 100 and 200 respectively.  After, Hu moments are calculated as follows:
+
+The regular moment of a shape in a binary image is defined by:
+
+<p align = "center">
+<img src = "./images/reg_moment.jpg" >
+</p>
+<p align = "center">
+</p>
+
+where I (x, y)  is the pixel intensity value at the (x ,y)-coordinate.
+
+In order to obtain translation invariance, we need to take our shape measurements relative to the centroid of the shape. The centroid is simply the center(x ,y)-coordinates of the shape, which we define as x– and y– respectively.
+
+With the centroids, we can compute relative moments which are centered about the centroid:
+
+<p align = "center">
+<img src = "./images/rel_moments.jpg" >
+</p>
+<p align = "center">
+</p>
+
+These relative moments do not have much discriminative power to represent shapes, nor do they posses any invariant properties. To solve that, Hu took these relative moments and constructed 7 separate moments which are suitable for shape discrimination:
+
+<p align = "center">
+<img src = "./images/hu_mom.jpg" >
+</p>
+<p align = "center">
+</p>
 
 
 ### Color 
@@ -282,7 +340,7 @@ where the color of the pixel (*x, y*) is represented by *f<sub>k</sub>(x, y)*. F
 
 
 ### Texture
-Texture is another important property of a logo; while they do not uniquely describe a logo, they may help differentiate textured logos from non-textures ones. For example, FedEx logos are typically found in print (plastic) or on vehicle decals (metal), and Adidas logos are frequently found on clothing and shoes (fabric, leather).
+Texture is another important property of a logo; while it does not uniquely describe a logo, it may help differentiate textured logos from non-textures ones. For example, FedEx logos are typically found in print (plastic) or on vehicle decals (metal), and Adidas logos are frequently found on clothing and shoes (cotton, leather).
 
 A statistical approach to generating texture features uses a gray level co-occurrence matrix, which is a histogram of co-occurring grayscale values (i, j) at a given distance d (defined in polar coordinates) over an image. The co-occurrence matrix C(i, j) is defined by
 <p align = "center">
@@ -291,6 +349,7 @@ A statistical approach to generating texture features uses a gray level co-occur
 <p align = "center">
 </p>
 where card indicates the number of elements in the set. 
+
 
 A set of features can be extracted from the co-occurrence matrix to reduce the dimensionality of the feature space. Figure 3 captures the set of features extracted from C(i,j)
 
@@ -301,30 +360,31 @@ A set of features can be extracted from the co-occurrence matrix to reduce the d
 Fig.3 - Formulas for Texture Features from Co-Occurrence Matrix (from **CITE PAPER**) 
 </p>
 
+The implementation of these non-learned features can be found in [general_feature_extraction.ipynb](./general_feature_extraction.ipynb).
+
 
 ## Mixed Models from Non-Learned Features
-With the non-learned features described above, we fit a set of models on each of three feature sets: SIFT BOW only, other non-learned features only (shape, color texture), and the combination of SIFT BOW and other non-learned features. The goal of this exercise was to understand how effective each of the feature sets are alone, and if any performance lift is achieved by training on them jointly. 
+With the non-learned features described above, we fit a set of models on each of three feature sets: BoW SIFT only, GFE only (shape, color texture), and the combination of BoW SIFT and GFE. The goal of this exercise is to understand how effective each of the feature sets are alone, and if any performance lift is achieved by training on them jointly. 
 
-For each feature set explored, three model forms were fit, tuned (using validated set), and evaluated:  Support Vector Machine, K-Nearest Neighbors, and Multinomial Logistic Regression. The validation set was used to tune the hyperparameters of each model. The top model configurations are displayed in Table _ below. 
+For each feature set explored, we selected Support Vector Machine algorithm for classification based on Romberg et al work. The validation set was used to tune the hyperparameters of each model. The model configurations are displayed in Table 1 below.
 <p align = "center">
 <img src = "./images/gfe_model_descriptions.png" >
 </p>
 <p align = "center">
-Fig.4 - Top Model Configuration per Feature Set
+Table 1 - Top Model Configuration per Feature Set
 </p>
 
-The results of each model are displayed and discussed in the results section.
+The implementation and evaluation of each model in Table 1 can be found in [gfe_modeling.ipynb](./gfe_modeling.ipynb). The results of each model are displayed and discussed in the results section.
+
 
 ## YOLO
-
 YOLO is a deep learning algo for real-time object detection.  It is capable not only to provide the exact location of an object in an image (bounding boxes) but also able to identify it (classification).  It uses a combination of approaches such as fast R-CNN, Retina-Net and Single-Shot MultiBox DEtector (SSD).  YOLO has become the standard in object recognition due to its speed, detection accuracy, good generalization and the fact that is open-source.
 
 In preparation for the training, we loaded 3,062 groundtruth images into Roboflow using the same train test validation partition (70%-15%-15%). After uploading, images were auto oriented so images are display using the correct EXIF orientation stored in the metadata.  Also, images are resized to 640x640 pixels to improve training performance.  No further data augmentations were applied.
 
-For training YOLO, we used a batch size of 16 and we ran 300 epochs as recommended in  [Tips for Best Training Results Documentation](https://docs.ultralytics.com/tutorials/training-tips-best-results/).  For testing, we set our confidence and IOU threshold equal to 50%. To compare performance times and accuracy,  we selected Yolov5 and Yolov7 and we found almost identical results with not noticeable performance difference.
+For training YOLO, we used a batch size of 16 and we ran 300 epochs as recommended in  [Tips for Best Training Results Documentation](https://docs.ultralytics.com/tutorials/training-tips-best-results/).  For testing, we set our confidence and IOU threshold equal to 50%. 
 
-
-Here are the results of YOLOv7 Test dataset:
+<!-- Here are the results of YOLOv7 Test dataset:
 <center>
 
 |  Class        |  Labels     |      P    |       R  |    mAP@.5 | mAP@.5:.95|
@@ -341,62 +401,226 @@ Here are the results of YOLOv7 Test dataset:
 |  starbucks    |          79  |     0.905  |     0.975  |     0.976    |   0.903 |
 |  ups          |       36    |   0.971  |     0.938  |     0.922   |    0.756 |
 
-</center>
-
-We found few interesting mislabeled images:
-
-Not Coca-Cola           |  Not Heineken           |  Not Starbucks
-:-------------------------:|:-------------------------:  |:-------------------------:
-<img src="./images/not_cocacola.jpg"  width=70% height=70%>  |  <img src="./images/not_heineken.jpg"  width=70% height=70%>  |  <img src="./images/not_starbucks.jpg"  width=70% height=70%>  
+</center> -->
 
 
-The step by step implementation of YOLO can be found in [Yolov5.ipynb](./Yolov5.ipynb) and [Yolov7.ipynb](./Yolov7.ipynb). These notebooks came from [Roboflow's Blog: How to Train YOLOv7 on a Custom Dataset](https://blog.roboflow.com/yolov7-custom-dataset-training-tutorial/).  It shows step by step how to download the dataset, custom train and run evaluations.
+
+
+
+
+The step by step implementation of YOLO can be found in [Yolov5.ipynb](./Yolov5.ipynb). These notebooks came from [Roboflow's Blog: How to Train YOLOv7 on a Custom Dataset](https://blog.roboflow.com/yolov7-custom-dataset-training-tutorial/).  It shows step by step how to download the dataset, custom train and run evaluations.
 
 
 # Results and Discussion
 In this section, we first summarize and compare the performance of each model form as defined above. Next, we discuss the performance of each model form in greater detail by looking at class-level performance. Finally, we examine specific images that were not predicted correctly by the top performing model to better understand the model’s faults and areas of potential improvement.
 
 ## Overall Performance
-Ultimately, the Yolo model was the top performing classifier on the test set. Figure 5 compares the performance of the YOLO model to the different GFE models trained on non-learned features.
+Ultimately, the Yolo model was the top performing classifier on the test set. Table 2 compares the performance of the YOLO model to the different GFE models trained on non-learned features.
 
-<p align = "center">
-<img src = "./images/performance_summary.png" >
-</p>
-<p align = "center">
-Fig. 5 - Comparison of model performance
-</p>
+<center>
 
-It was expected that the YOLO model would be the strongest performer as it is known to deliver state of the art results across many image classification tasks. Whereas the GFE models are fit on deterministic features extracted from images, the YOLO model is able to learn abstract features that apply specifically to the logo domain in fine tuning. However, the Mixed GFE model is competitive with YOLO, which highlights the signal provided by the BoW SIFT and other non-learned features.
 
-The top performing model that uses only non-learned features is the Mixed GFE model. We hypothesized that the BoW SIFT features alone would deliver the top performance; however, the additional non-learned features provided additional signal. The union of all non-learned features makes the model more complex and the fact that improved performance tells us that the SIFT model is not complex enough and underfit the data.
+|  Model Name   | Model Form | Feature Set                     | Accuracy | Precision | Recall | F1   |
+| :---          |    :----   |   :----                         |  :----:  |  :----:   | :----: |:----:|
+|YOLO V7        |   YOLO V7  |Learned by Model                 |   0.88*  |   0.88    |  0.89  | 0.88 |
+|Mixed SIFT + GFE| SVM       |BoW SIFT + Shape, Color, Texture |   0.85   |   0.84    |  0.86  | 0.86 |
+|BoW SIFT        | SVM       |BoW SIFT                         |   0.76   |   0.77    |  0.76  | 0.76 |
+|GFE Model       | SVM       |Shape, Color, Texture            |   0.72   |   0.71    |  0.72  | 0.72 |
+
+**Table 2 - Comparison of model performance**
+***YOLO models use mAP@0.5 for accuracy metric**
+
+</center>
+
+It was expected that the YOLO model would be the strongest performer as it is known to deliver state of the art results across many image classification tasks. Whereas the GFE models are fit on deterministic features extracted from images, the YOLO model is able to learn abstract features in fine tuning that apply specifically to the logo domain. However, the Mixed GFE model is competitive with YOLO, which highlights the signal provided by the BoW SIFT and other non-learned features.
+
+The top performing model that uses only non-learned features is the Mixed GFE model. We hypothesized that the BoW SIFT features alone would deliver the top performance; however, the additional non-learned features provided additional signal. The union of all non-learned features makes the model more complex and the fact that improved performance tells us that the SIFT model is not complex enough and underfit the data. It is important to keep in mind that BoW SIFT features were limited by compute constraints and could have increased complexity itself, aside from the other GFE features.
 
 ## Class-Level Performance
-In multiclass classification problems, it is crucial to understand the model performance across classes, rather than just the aggregate measures. Figure 6 shows the class-level performances of the YOLO, Mixed GFE, and BoW SIFT models.
+In multi-class classification problems, it is crucial to understand the model performance across classes, rather than just the aggregate measures. Table 3 shows the class-level performances of the YOLO, Mixed GFE, and BoW SIFT models.
 
-<p align = "center">
-<img src = "./images/class_level_f1_comparison.png" >
-</p>
-<p align = "center">
-Fig. 6 - Comparison of F1 score per class across models
-</p>
+<center>
+
+
+| Class | YOLO V7 | Mixed GFE + SIFT | BoW SIFT |
+| :---  | :----|:----:|:----:|
+| Adidas| 0.79 | 0.80 | 0.75 |
+| Apple | 0.92 | 0.68 | 0.45 |
+| BMW   | 0.95 | 0.76 | 0.61 |
+| Coca cola | 0.73 | 0.82 | 0.77 |
+| DHL   | 0.96 | 0.95 | 0.84 |
+| FedEx | 0.99 | 0.84 | 0.81 |
+| Heineken | 0.80 | 0.88 | 0.88 |
+| Pepsi | 0.79 | 0.88 | 0.68 |
+| Starbucks | 0.98 | 0.90 | 0.88 |
+| UPS   | 0.92 | 0.95 | 0.93 |
+
+**Table 3 - Comparison of F1 score per class across models**
+
+</center>
 
 Looking across logo classes and models, there are some classes that each model does well on, and some with which each model struggles. Each model has a strong F1 score for UPS, DHL and Starbucks classes; UPS and DHL are both simple and distinct logos, while Starbucks is highly distinct and likely easier for models to differentiate. Adidas and Coca Cola have F1-scores mostly below or near 0.8 for each model; this could be due to the fact that these two brands have greater diversity in the appearance of logos across a set of different products.
 
-Comparing YOLO to the Mixed GFE & Sift model, YOLO performs markedly better for Apple and BMW, and markedly worse for Coca Cola, Heineken and Pepsi. One explanation could be that the former classes are often found on flat surfaces, and the latter are all drinks which are typically found on curved surfaces.
+Comparing YOLO to the Mixed GFE & Sift model, YOLO performs markedly better for Apple and BMW, and markedly worse for Coca Cola, Heineken and Pepsi. One explanation could be that the former classes are often found on flat surfaces, and the latter are all drinks which are typically found on curved surfaces. Additionally, research has shown that YOLO models perform well on smaller objects and in low contrast environments, which apply closely to Apple and BMW [8].
 
-Comparing the Mixed GFE & SIFT model to the SIFT model, the Mixed model provides strong lift in each of the classes with which SIFT struggles most: Apple, BMW, and Pepsi. The remainder of classes are roughly comparable, with the Mixed model slightly outperforming the SIFT model across.
-
+Comparing the Mixed GFE & SIFT model to the SIFT model, the Mixed model provides strong lift in each of the classes with which the BoW SIFT struggles most: Apple, BMW, and Pepsi. One explanation could be that each of these logos have few corners and thus SIFT might struggle to consistently identify keypoints. The color, shape and texture features are more valuable when detecting keypoints is more difficult and less consistent. The remainder of classes are roughly comparable, with the Mixed model slightly outperforming the SIFT model across.
 
 ## Image-Level Error Analysis
-Suggested flow: Get confusion matrix for YOLO, find the class that is most commonly confused for another (e.g., Apple confused for Adidas). Then pick out some cases where Apple was predicted to be Adidas. 
+For the top performing YOLO V7 model, we picked out several examples of misclassified test images to further understand the limitations and weaknesses of the model. This exercise showed that the YOLO model made mistakes more frequently in cases with small, blurry, and occluded images as well as cases of unusual logos that deviate from the common case (such as the Heineken pint image).
 
-@Luis, we should move the images in yolo section down to this part of the results section
+<!-- :-------------------------:|:-------------------------:  |:-------------------------: |:-------------------------: |
+<img src="./images/blurry_pepsi.jpg"  width=70% height=70%>  |  <img src="./images/half_starbucks.jpg"  width=70% height=70%>  |  <img src="./images/not_cocacola.jpg"  width=70% height=70%>   |  <img src="./images/not_detected_bmw.jpg"  width=70% height=70%>   |
+<img src="./images/not_detected_heineken.jpg"  width=70% height=70%>  |  <img src="./images/not_heineken.jpg"  width=70% height=70%>  |  <img src="./images/other_heineken.jpg"  width=70% height=70%>   |  <img src="./images/warped_coke.jpg"  width=70% height=70%>   | -->
+
+
+
+
+<div id="image-table">
+    <table>
+       <tr>
+    	      <td style="padding:10px">
+        	    Undetected PEPSI due to blur
+      	    </td>
+            <td style="padding:10px">
+            	Detected partial Starbucks
+            </td>
+            <td style="padding:10px">
+            	Shouldn't have detected Coca-Cola
+            </td>
+            <td style="padding:10px">
+            	Not detected small BMW
+            </td>
+        </tr>
+	    <tr>
+    	      <td style="padding:10px">
+        	    <img src="./images/blurry_pepsi.jpg"  width=70% height=70%/>
+      	    </td>
+            <td style="padding:10px">
+            	<img src="./images/half_starbucks.jpg"  width=70% height=70%/>
+            </td>
+            <td style="padding:10px">
+            	<img src="./images/not_cocacola.jpg"  width=70% height=70%/>
+            </td>
+            <td style="padding:10px">
+            	<img src="./images/not_detected_bmw.jpg"  width=70% height=70%/>
+            </td>
+        </tr>
+        <tr>
+    	      <td style="padding:10px">
+        	    Undetected small Heineken sign
+      	    </td>
+            <td style="padding:10px">
+            	Shouldn't have detected Heineken
+            </td>
+            <td style="padding:10px">
+            	Not detected different Heineken logos
+            </td>
+            <td style="padding:10px">
+            	Not detected warped Coca-Cola
+            </td>
+        </tr>
+        <tr>
+    	      <td style="padding:10px">
+        	    <img src="./images/not_detected_heineken.jpg"  width=70% height=70%/>
+      	    </td>
+            <td style="padding:10px">
+            	<img src="./images/not_heineken.jpg"  width=70% height=70%/>
+            </td>
+            <td style="padding:10px">
+            	<img src="./images/other_heineken.jpg"  width=70% height=70%/>
+            </td>
+            <td style="padding:10px">
+            	<img src="./images/warped_coke.png"  width=70% height=70%/>
+            </td>
+        </tr>
+    </table>
+</div>
+
+
+## State of the Art Comparison
+As mentioned in the Data section, our models are developed on a subset of classes in the Logos32+ dataset (due to compute constraints) and also do not include a background class. Though not an apples-to-apples comparison due to dataset differences, Figures 7 and 8 place our models in the context of the literature that inspired them.
+
+<p align = "center">
+<img src = "./images/sota_bow_sift_comparison.png" >
+</p>
+<p align = "center">
+Fig. 7 - Comparison with BoW SIFT in Romberg et al. [3]
+</p>
+
+<p align = "center">
+<img src = "./images/sota_cnn_comparison.png" >
+</p>
+<p align = "center">
+Fig. 8 - Comparison with CNN in Bianco et al. [1]
+</p>
+
+The BoW SIFT model fit on FlickrLogos-32 dataset in Romberg et al. achieves much higher performance than our BoW SIFT fit on the subset of classes in Logos32+. Additionally, the CNN model fit on FlickrLogos-32 dataset in Bianco et al. also outperforms our YOLO model fit on the subset of classes in Logos32+. A direct comparison is challenging without fitting our models on the same data; however, we hypothesize that differences can be primarily attributed to our model working with a subset of classes, not including a background class, and not utilizing data augmentation. 
 
 
 # Challenges and Next Steps
+During the data pre-processing, augmentation and the model building phases we encountered a few challenges which are listed below:
+
+* The Logos 32 plus dataset consists of 32 classes. We had to reduce the selection to 10 classes to keep data processing and training manageable.
+* A SIFT Bag-of-visual-words histogram model was used during training. As we increased the number of bins/clusters for the descriptors, the model continued to show improved performance on the validation set. We hit computing capacity before we could further increase complexity and validate the model.
+* Contrast Limited AHE (CLAHE) was used to reduce this problem of noise amplification. Due to the use of a smaller kernel in this step, keypoints increased by 3.5 times per image. This caused severe performance bottle necks while running the k-means algorithm to create SIFT Bag-of-visual-words.
+* Extracting SIFT keypoints from some of the homogeneous logo images were challenging and no keypoints were detected in some cases. These have been excluded during both training and validation.
+* Handling same brand logos with different color schemes, mirror images and textures on different surfaces.
+
+As an extension to this project, we have identified a few next steps:
+
+* Build a classification model that includes all 32 classes
+* Perform Contrast Limited AHE with a larger kernel limiting the contrast amplification and the noisy details
+* Perform data augmentation for the training similar to the Bianco et al. paper[1]
+* Use 2 layers in SIFT with 160 dimension keypoint descriptors
+* Increase complexity of the Mixed model by introducing additional features into the model
+* Execute Yolo algorithm on the dataset by enabling data augmentation options 
+
+
+# Appendix 1 : additional YOLO results
 
 
 
+<p align = "center">
+<img src = "./images/confusion_matrix.png" width="30%" height="30%" >
+</p>
+<p align = "center">
+YOLOv7 Test Confusion Matrix
+
+</p>
+
+<p align = "center">
+<img src = "./images/PR_curve.png" width="30%" height="30%" >
+</p>
+<p align = "center">
+YOLOv7 Test PR Curve
+
+</p>
+
+<p align = "center">
+<img src = "./images/F1_curve.png" width="30%" height="30%" >
+</p>
+<p align = "center">
+YOLOv7 Test F1 Curve
+
+</p>
+
+<p align = "center">
+<img src = "./images/P_curve.png" width="30%" height="30%" >
+</p>
+<p align = "center">
+YOLOv7 Test P Curve
+
+</p>
+
+</p>
+
+<p align = "center">
+<img src = "./images/P_curve.png" width="30%" height="30%" >
+</p>
+<p align = "center">
+YOLOv7 Test R Curve
+
+</p>
 
 
 # References 
@@ -406,7 +630,6 @@ Suggested flow: Get confusion matrix for YOLO, find the class that is most commo
 Simone Bianco, Marco Buzzelli, Davide Mazzini and Raimondo Schettini (2017).
 Deep Learning for Logo Recognition. Neurocomputing.
 https://doi.org/10.1016/j.neucom.2017.03.051
-
 
 <a id="2">[2]</a> 
 Choras, Ryszard S.. (2007). Image feature extraction techniques and their applications for CBIR and biometrics systems. 
@@ -419,18 +642,20 @@ Stefan Romberg and Rainer Lienhart. 2013. Bundle min-hashing for logo recognitio
 <a id="4">[4]</a> 
 Romberg, Stefan & Pueyo, Lluis & Lienhart, Rainer & Zwol, Roelof. (2011). Scalable logo recognition in real-world images. 25. 10.1145/1991996.1992021. https://dl.acm.org/doi/10.1145/1991996.1992021
 
-
 <a id="5">[5]</a> 
 Hou, S., Li, J., Min, W., Hou, Q., Zhao, Y., Zheng, Y., & Jiang, S. (2022). Deep Learning for Logo Detection: A Survey. ArXiv, abs/2210.04399. https://arxiv.org/abs/2210.04399
 
 <a id="6">[6]</a> 
 C. Li, I. Fehérvári, X. Zhao, I. Macedo and S. Appalaraju, "SeeTek: Very Large-Scale Open-set Logo Recognition with Text-Aware Metric Learning," 2022 IEEE/CVF Winter Conference on Applications of Computer Vision (WACV), 2022, pp. 587-596, doi: 10.1109/WACV51458.2022.00066. https://ieeexplore.ieee.org/document/9706752
 
-
 <a id="7">[7]</a> 
 H. Su, S. Gong and X. Zhu, "WebLogo-2M: Scalable Logo Detection by Deep Learning from the Web," 2017 IEEE International Conference on Computer Vision Workshops (ICCVW), 2017, pp. 270-279, doi: 10.1109/ICCVW.2017.41. https://ieeexplore.ieee.org/abstract/document/8265251
 
+<a id="8">[8]</a> 
+Shuo Yang, Junxing Zhang, Chunjuan Bo, Meng Wang, Lijun Chen (2018). "Fast vehicle logo detection in complex scenes," Optics & Laser Technology Volume 110, 2019, pp.196-210, doi: 10.1016/j.optlastec.2018.08.007. https://www.sciencedirect.com/science/article/abs/pii/S0030399218310715
 
+<a id="9">[9]</a> 
+Ming-Kuei Hu, "Visual pattern recognition by moment invariants," in IRE Transactions on Information Theory, vol. 8, no. 2, pp. 179-187, February 1962, doi: 10.1109/TIT.1962.1057692.
 
 
 <!-- <div id="refs"></div> -->
