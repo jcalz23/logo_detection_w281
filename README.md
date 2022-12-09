@@ -106,7 +106,7 @@ Logo recognition can be considered a subset of object recognition.  In general, 
 
 To prepare data for classification, we applied several pre-processing methods including Contrast Limited Adaptive Histogram Equalization (CLAHE) algorithm, data augmentation and class balancing.  
 
-To classify logos, we built three 1-vs-all linear SVMs models and one CNN (YOLO) model :
+To classify logos, we built three 1-vs-all linear SVMs models and used a YOLO model :
 1. Bag of Words SIFT.  This model was the standard prior 2015 and has good performance.
 2. General Feature Extraction Model.  We referred to Choras et al.[[2]](#2) work to extract color, texture and shape features from images.
 3. Mixed model with a combination of Bag of Words SIFT and General Feature Extraction Model
@@ -161,7 +161,7 @@ In recent reasearch, deep learning has emerged as the default standard for logo 
 4. Feature Pyramid Network (FPN) uses a multiple feature map layers similar to SSD.  It is composed of two pathways: bottom-up and top-down.  The bottom-up is the usual convolutional network for feature extraction.  As we go up on the layer, the spatial resolution decreases but the semantic value increases.  In comparison, SSD only uses top layers of bottom-up pathway for prediction whereas FPN provides a top-down pathway to construct higher resolution layers from a semantic rich layer.
 
 
-The tables below show State-Of-The-Art Mean Average Precisions (mAP) for small, medium, and large dataset.  We can observe that mAP decreases with the size of dataset.  Interestingly, for medium and small datasets, Scaled YOLOv4 performs better than the more conventional Faster R-CNN.
+The tables below show State-Of-The-Art Mean Average Precisions (mAP) for small, medium, and large datasets.  We can observe that mAP decreases with the size of dataset.  Interestingly, for medium and small datasets, Scaled YOLOv4 performs better than the more conventional Faster R-CNN.
 
 <center>
 <div id="sota-table">
