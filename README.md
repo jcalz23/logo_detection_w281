@@ -1,13 +1,4 @@
-﻿---
-﻿﻿---
-title : "Logo Detection"
-output:   
-    md_document:
-        variant: markdown_github
-bibliography: "references.bib"
-#nocite: '@*'
-​---
----
+﻿
 
 <!-- Add banner here -->
 
@@ -105,14 +96,14 @@ Here is a sample TOC(*wow! such cool!*) that is actually the TOC for this README
 
 
 These days brand logos can be found almost everywhere from images produced by IoT devices (cars and survellaince cameras) to social media postings (Facebook, Tiktok, Instagram).  As such, logo recognition is a fundamental problem for computer vision and can be used in the following applications:
-- Copyright and Trademark compliance :  to detect patent infrigment by identifying logo patterns and colors as a well recognized brand
-- Brand related statistics :  to understand consumer for targetted advertising.  Brand protection, recomendation and identification
-- Intelligent traffic-control systems :  to recognize a stop sign  using camera feed from vehicles
+- Copyright and Trademark compliance :  to detect patent infrigment by identifying logo patterns and colors from a well recognized brand
+- Brand related statistics :  to understand consumer for targeted advertising.  Brand protection, recomendation and identification
+- Intelligent traffic-control systems :  to recognize a stop or yield sign using camera feed from vehicles
 - Document categorization : to detect logo appearing in documents and use it as a statement of ownership
 
 Logo recognition can be considered a subset of object recognition.  In general, the majority of the logos are two dimensional objects containing stylized shapes, no texture and primary colors.  In some cases, logos can contain text (i.e. Fedex logo) or can be placed in different surfaces (i.e. Coca-Cola bottle or Adidas shoes).  The logo detection process can be split in two tasks:  determining the location of the logo (bounding box) and logo classification.  Finding the logo in a real world image is a challenging task.  It is desirable to have a incremental logo model learning without exhaustive manual labelling of increasing data expansion [[5]](#5). Also, logos can appear in highly diverse contexts, scales, changes in illumination, size, resolution, and perspectives [[6]](#6)
 
-To prepare data for classification, we applied several pre-processing methods such Contrast Limited Adaptive Histogram Equalization (CLAHE) algorithm, data augmentation and class balancing.  
+To prepare data for classification, we applied several pre-processing methods including Contrast Limited Adaptive Histogram Equalization (CLAHE) algorithm, data augmentation and class balancing.  
 
 To classify logos, we built three 1-vs-all linear SVMs models and one CNN model :
 1. Bag of Words SIFT.
@@ -250,7 +241,7 @@ SIFT or Scale Invariant Feature Transform is a feature detection algorithm in Co
 <img src = "./images/sift_bagofwords.png" width="600" height="500">
 </p>
 <p align = "center">
-Fig.1 - Bag of Words SIFT diagram from https://heraqi.blogspot.com/2017/03/BoW.html
+Fig.3 - Bag of Words SIFT diagram from https://heraqi.blogspot.com/2017/03/BoW.html
 </p>
 
 
@@ -259,9 +250,39 @@ The step by step implementation of SIFT and classification algorithms on the log
 
 ## General Feature Extraction (GFE)
 
-Along with the BoW SIFT features, additional non-learned features were extracted from the image bounding boxes, these include: shape, color and texture feautures. The motivation is to understand if model performance improves when fit on BoW SIFT and additional features. 
+Along with the BoW SIFT features, additional non-learned features were extracted from the image bounding boxes, these include: shape, color and texture feautures. The motivation is to understand if model performance improves when fit on BoW SIFT and additional features.  
 
 ### Shape 
+
+Image moments are used to describe the shape of an object in an image.  These moments are described in the 1962's Ming-Kuei paper [[3]](#3) and capture information like the are of the object, the centroid and the orientation.  Hu moments should not be used in situations where there is noise, occlusion or a lack of clean segmentation since it is very hard to get a dependable and repeatable centroid. Hu moments are invariant to translation, scale, rotation and reflection.  To calculate Hu moments, we first used Canny to calculate the edges of a log with threshold 1 and 2 set to 100 and 200 respectively.  After, Hu moments are calculated as follows:
+
+The regular moment of a shape in a binary image is defined by:
+
+<p align = "center">
+<img src = "./images/reg_moment.jpg" >
+</p>
+<p align = "center">
+</p>
+
+where I (x, y)  is the pixel intensity value at the (x ,y)-coordinate.
+
+In order to obtain translation invariance, we need to take our shape measurements relative to the centroid of the shape. The centroid is simply the center(x ,y)-coordinates of the shape, which we define as x– and y– respectively.
+
+With the centroids, we can compute relative moments which are centered about the centroid:
+
+<p align = "center">
+<img src = "./images/rel_moments.jpg" >
+</p>
+<p align = "center">
+</p>
+
+These relative moments do not have much discriminative power to represent shapes, nor do they posses any invariant properties. To solve that, Hu took these relative moments and constructed 7 separate moments which are suitable for shape discrimination:
+
+<p align = "center">
+<img src = "./images/hu_mom.jpg" >
+</p>
+<p align = "center">
+</p>
 
 
 ### Color 
@@ -315,10 +336,10 @@ For each feature set explored, three model forms were fit, tuned (using validate
 <img src = "./images/gfe_model_descriptions.png" >
 </p>
 <p align = "center">
-Fig.4 - Top Model Configuration per Feature Set
+Table 1 - Top Model Configuration per Feature Set
 </p>
 
-The implementation and evaluation of each model in Figure 4 can be found in [gfe_modeling.ipynb](./gfe_modeling.ipynb). The results of each model are displayed and discussed in the results section.
+The implementation and evaluation of each model in Table 1 can be found in [gfe_modeling.ipynb](./gfe_modeling.ipynb). The results of each model are displayed and discussed in the results section.
 
 
 ## YOLO
@@ -576,6 +597,9 @@ H. Su, S. Gong and X. Zhu, "WebLogo-2M: Scalable Logo Detection by Deep Learning
 
 <a id="8">[8]</a> 
 Shuo Yang, Junxing Zhang, Chunjuan Bo, Meng Wang, Lijun Chen (2018). "Fast vehicle logo detection in complex scenes," Optics & Laser Technology Volume 110, 2019, pp.196-210, doi: 10.1016/j.optlastec.2018.08.007. https://www.sciencedirect.com/science/article/abs/pii/S0030399218310715
+
+<a id="9">[9]</a> 
+Ming-Kuei Hu, "Visual pattern recognition by moment invariants," in IRE Transactions on Information Theory, vol. 8, no. 2, pp. 179-187, February 1962, doi: 10.1109/TIT.1962.1057692.
 
 
 <!-- <div id="refs"></div> -->
