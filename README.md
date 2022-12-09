@@ -295,6 +295,7 @@ A statistical approach to generating texture features uses a gray level co-occur
 </p>
 where card indicates the number of elements in the set. 
 
+
 A set of features can be extracted from the co-occurrence matrix to reduce the dimensionality of the feature space. Figure 3 captures the set of features extracted from C(i,j)
 
 <p align = "center">
@@ -361,12 +362,15 @@ In this section, we first summarize and compare the performance of each model fo
 ## Overall Performance
 Ultimately, the Yolo model was the top performing classifier on the test set. Figure 5 compares the performance of the YOLO model to the different GFE models trained on non-learned features.
 
-<p align = "center">
-<img src = "./images/performance_summary.png" >
-</p>
-<p align = "center">
-Fig. 5 - Comparison of model performance
-</p>
+**Fig. 5 - Comparison of model performance**
+|  Model Name   | Model Form | Feature Set                     | Accuracy | Precision | Recall | F1   |
+| :---          |    :----   |   :----                         |  :----:  |  :----:   | :----: |:----:|
+|YOLO V7        |   YOLO V7  |Learned by Model                 |   0.88*  |   0.88    |  0.89  | 0.88 |
+|Mixed SIFT + GFE| SVM       |BoW SIFT + Shape, Color, Texture |   0.85   |   0.84    |  0.86  | 0.86 |
+|BoW SIFT        | SVM       |BoW SIFT                         |   0.76   |   0.77    |  0.76  | 0.76 |
+|GFE Model       | SVM       |Shape, Color, Texture            |   0.72   |   0.71    |  0.72  | 0.72 |
+
+***YOLO models use mAP@0.5 for accuracy metric**
 
 It was expected that the YOLO model would be the strongest performer as it is known to deliver state of the art results across many image classification tasks. Whereas the GFE models are fit on deterministic features extracted from images, the YOLO model is able to learn abstract features in fine tuning that apply specifically to the logo domain. However, the Mixed GFE model is competitive with YOLO, which highlights the signal provided by the BoW SIFT and other non-learned features.
 
@@ -375,12 +379,20 @@ The top performing model that uses only non-learned features is the Mixed GFE mo
 ## Class-Level Performance
 In multi-class classification problems, it is crucial to understand the model performance across classes, rather than just the aggregate measures. Figure 6 shows the class-level performances of the YOLO, Mixed GFE, and BoW SIFT models.
 
-<p align = "center">
-<img src = "./images/class_level_f1_comparison.png" >
-</p>
-<p align = "center">
-Fig. 6 - Comparison of F1 score per class across models
-</p>
+**Fig. 6 - Comparison of F1 score per class across models**
+
+| Class | YOLO V7 | Mixed GFE + SIFT | BoW SIFT |
+| :---  | :----|:----:|:----:|
+| Adidas| 0.79 | 0.80 | 0.75 |
+| Apple | 0.92 | 0.68 | 0.45 |
+| BMW   | 0.95 | 0.76 | 0.61 |
+| Coca cola | 0.73 | 0.82 | 0.77 |
+| DHL   | 0.96 | 0.95 | 0.84 |
+| FedEx | 0.99 | 0.84 | 0.81 |
+| Heineken | 0.80 | 0.88 | 0.88 |
+| Pepsi | 0.79 | 0.88 | 0.68 |
+| Starbucks | 0.98 | 0.90 | 0.88 |
+| UPS   | 0.92 | 0.95 | 0.93 |
 
 Looking across logo classes and models, there are some classes that each model does well on, and some with which each model struggles. Each model has a strong F1 score for UPS, DHL and Starbucks classes; UPS and DHL are both simple and distinct logos, while Starbucks is highly distinct and likely easier for models to differentiate. Adidas and Coca Cola have F1-scores mostly below or near 0.8 for each model; this could be due to the fact that these two brands have greater diversity in the appearance of logos across a set of different products.
 
