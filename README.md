@@ -5,7 +5,7 @@
 # W281 - Final Project : Logo Detection
 
 <!-- ![](./all_logos.png  {width=40px height=400px} ) -->
-<img src="./images/all_logos.png" width="400" height="200" >
+<img src="./images/all_logos.png" width="550" height="300" >
 
 Authors: Luis Chion (lmchion@berkeley.edu), Eric Liu (eliu390@berkeley.edu), Viswanathan Thiagarajan (viswanathan@berkeley.edu), John Calzaretta (john.calzaretta@berkeley.edu)
 
@@ -13,6 +13,7 @@ Instructor: Allen Y. Yang
 
 Date: 12/09/2022
 
+![image](https://user-images.githubusercontent.com/76463802/206735484-282bc139-58c8-4718-a745-e728c014d185.png)
 
 ---
 <!-- Add buttons here -->
@@ -141,7 +142,7 @@ Here is a random GIF as a placeholder.
 In recent years, many datasets have been created to be used as quantitative and qualitative comparisons and benchmarking for logo detection[[5]](#5).  These sets vary in sizes and contain a realistic set of images with accurate ground truth annotations.  Datasets could vary quite a bit in the number of classes and images per class.  From FlickrLogos-32 with 32 classes and 2.2K images to PL8K with 8K classes and 3M images.  FlickrLogos-32 comprises of images from the real world, and many contain occlusions, apearance changes, and lighting changes.  Large datasets such as PL8K have greater class imbalance since images are collected semi-programatically.  The images in PL8K span across different enterprises, namely Clothing, Food, Transportation, Electronics, Necessities, Leisure, Medicine, Sports and Others.  
 
 <p align = "center">
-<img src = "./images/dataset_table.jpg" width="50%" height="50%" >
+<img src = "./images/dataset_table.jpg" width="65%" height="70%" >
 </p>
 <p align = "center">
 Table.1 - Statistics of existing logo detection datasets
@@ -178,13 +179,13 @@ The tables below show State-Of-The-Art Mean Average Precisions (mAP) for small, 
         </tr>
         <tr>
     	      <td style="padding:10px">
-        	    <img src="./images/flick32_bench.jpg"  width=70% height=70%/>
+        	    <img src="./images/flick32_bench.jpg"  width=100% height=100%/>
       	    </td>
             <td style="padding:8px">
-            	<img src="./images/qmul_open_logo_bench.jpg"  width=70% height=70%/>
+            	<img src="./images/qmul_open_logo_bench.jpg"  width=100% height=100%/>
             </td>
             <td style="padding:8px">
-            	<img src="./images/open_brands_bench.jpg"  width=70% height=70%/>
+            	<img src="./images/open_brands_bench.jpg"  width=100% height=100%/>
             </td>
         </tr>
     </table>
@@ -313,7 +314,7 @@ With the centroids, we can compute relative moments which are centered about the
 These relative moments do not have much discriminative power to represent shapes, nor do they posses any invariant properties. To solve that, Hu took these relative moments and constructed 7 separate moments which are suitable for shape discrimination:
 
 <p align = "center">
-<img src = "./images/hu_mom.jpg" >
+<img src = "./images/hu_mom.jpg" width="65%" height="70%" >
 </p>
 <p align = "center">
 </p>
@@ -354,7 +355,7 @@ where card indicates the number of elements in the set.
 A set of features can be extracted from the co-occurrence matrix to reduce the dimensionality of the feature space. Figure 3 captures the set of features extracted from C(i,j)
 
 <p align = "center">
-<img src = "./images/texture_features.png" >
+<img src = "./images/texture_features.png" width="50%" height="50%">
 </p>
 <p align = "center">
 Fig.3 - Formulas for Texture Features from Co-Occurrence Matrix (from **CITE PAPER**) 
@@ -434,7 +435,7 @@ Table 2 compares the performance of the YOLO model to the different GFE models t
 
 It was expected that the YOLO model would be a strong performer as it is known to deliver state of the art results across many image classification tasks. Whereas the GFE models are fit on deterministic features extracted from images, the YOLO model is able to learn abstract features in fine tuning that apply specifically to the logo domain. However, the Mixed GFE model is competitive with YOLO, which highlights the signal provided by the BoW SIFT and other non-learned features.
 
-The top performing model that uses only non-learned features is the Mixed GFE model. We hypothesized that the BoW SIFT features alone would deliver the top performance; however, the additional non-learned features provided additional signal. The union of all non-learned features makes the model more complex and the fact that improved performance tells us that the SIFT model is not complex enough and underfit the data. It is important to keep in mind that BoW SIFT features were limited by compute constraints and could have increased complexity itself, aside from the other GFE features.
+The top performing model that uses only non-learned features is the Mixed GFE model which was comparable to YOLO performance. We hypothesized that the BoW SIFT features alone would deliver the top performance; however, the additional non-learned features provided additional signal. The union of all non-learned features makes the model more complex and the fact that improved performance tells us that the SIFT model is not complex enough and underfit the data. It is important to keep in mind that BoW SIFT Bag of visual words were limited by compute constraints and could have increased complexity itself with more than 1500 words, aside from the other GFE features.
 
 ## Class-Level Performance
 In multi-class classification problems, it is crucial to understand the model performance across classes, rather than just the aggregate measures. Table 3 shows the class-level performances of the YOLO, Mixed GFE, and BoW SIFT models.
@@ -459,7 +460,7 @@ In multi-class classification problems, it is crucial to understand the model pe
 
 </center>
 
-Looking across logo classes and models, there are some classes that each model does well on, and some with which each model struggles. Each model has a strong F1 score for UPS, DHL and Starbucks classes; UPS and DHL are both simple and distinct logos, while Starbucks is highly distinct and likely easier for models to differentiate. Adidas and Coca Cola have F1-scores mostly below or near 0.8 for each model; this could be due to the fact that these two brands have greater diversity in the appearance of logos across a set of different products.
+Looking across logo classes and models, there are some classes that each model does well on, and some with which each model struggles. Each model has a strong F1 score for Starbucks, UPS and Fedex classes; UPS and Fedex are both text based logos with distinct edges, while Starbucks is highly distinct and likely easier for models to differentiate. Adidas and Coca Cola have F1-scores mostly below or near 0.8 for each model; this could be due to the fact that these two brands have greater diversity in the appearance of logos across different images and have larger homogeneous area.
 
 Comparing YOLO to the Mixed GFE & Sift model, YOLO performs markedly better for Apple and BMW, and markedly worse for Coca Cola, Heineken and Pepsi. One explanation could be that the former classes are often found on flat surfaces, and the latter are all drinks which are typically found on curved surfaces. Additionally, research has shown that YOLO models perform well on smaller objects and in low contrast environments, which apply closely to Apple and BMW [8].
 
