@@ -415,7 +415,7 @@ The step by step implementation of YOLO can be found in [Yolov5.ipynb](./Yolov5.
 In this section, we first summarize and compare the performance of each model form as defined above. Next, we discuss the performance of each model form in greater detail by looking at class-level performance. Finally, we examine specific images that were not predicted correctly by the top performing model to better understand the model’s faults and areas of potential improvement.
 
 ## Overall Performance
-Ultimately, the Yolo model was the top performing classifier on the test set. Table 2 compares the performance of the YOLO model to the different GFE models trained on non-learned features.
+Table 2 compares the performance of the YOLO model to the different GFE models trained on non-learned features.
 
 <center>
 
@@ -423,16 +423,16 @@ Ultimately, the Yolo model was the top performing classifier on the test set. Ta
 |  Model Name   | Model Form | Feature Set                     | Accuracy | Precision | Recall | F1   |
 | :---          |    :----   |   :----                         |  :----:  |  :----:   | :----: |:----:|
 |YOLO V7        |   YOLO V7  |Learned by Model                 |   0.88*  |   0.88    |  0.89  | 0.88 |
-|Mixed SIFT + GFE| SVM       |BoW SIFT + Shape, Color, Texture |   0.85   |   0.84    |  0.86  | 0.86 |
-|BoW SIFT        | SVM       |BoW SIFT                         |   0.76   |   0.77    |  0.76  | 0.76 |
-|GFE Model       | SVM       |Shape, Color, Texture            |   0.72   |   0.71    |  0.72  | 0.72 |
+|Mixed SIFT + GFE| SVM       |BoW SIFT + Shape, Color, Texture |   0.89   |   0.88    |  0.87  | 0.88 |
+|BoW SIFT        | SVM       |BoW SIFT                         |   0.80   |   0.80    |  0.81  | 0.80 |
+|GFE Model       | SVM       |Shape, Color, Texture            |   0.79   |   0.75    |  0.74  | 0.74 |
 
 **Table 2 - Comparison of model performance**
 ***YOLO models use mAP@0.5 for accuracy metric**
 
 </center>
 
-It was expected that the YOLO model would be the strongest performer as it is known to deliver state of the art results across many image classification tasks. Whereas the GFE models are fit on deterministic features extracted from images, the YOLO model is able to learn abstract features in fine tuning that apply specifically to the logo domain. However, the Mixed GFE model is competitive with YOLO, which highlights the signal provided by the BoW SIFT and other non-learned features.
+It was expected that the YOLO model would be a strong performer as it is known to deliver state of the art results across many image classification tasks. Whereas the GFE models are fit on deterministic features extracted from images, the YOLO model is able to learn abstract features in fine tuning that apply specifically to the logo domain. However, the Mixed GFE model is competitive with YOLO, which highlights the signal provided by the BoW SIFT and other non-learned features.
 
 The top performing model that uses only non-learned features is the Mixed GFE model. We hypothesized that the BoW SIFT features alone would deliver the top performance; however, the additional non-learned features provided additional signal. The union of all non-learned features makes the model more complex and the fact that improved performance tells us that the SIFT model is not complex enough and underfit the data. It is important to keep in mind that BoW SIFT features were limited by compute constraints and could have increased complexity itself, aside from the other GFE features.
 
@@ -444,16 +444,16 @@ In multi-class classification problems, it is crucial to understand the model pe
 
 | Class | YOLO V7 | Mixed GFE + SIFT | BoW SIFT |
 | :---  | :----|:----:|:----:|
-| Adidas| 0.79 | 0.80 | 0.75 |
-| Apple | 0.92 | 0.68 | 0.45 |
-| BMW   | 0.95 | 0.76 | 0.61 |
-| Coca cola | 0.73 | 0.82 | 0.77 |
-| DHL   | 0.96 | 0.95 | 0.84 |
-| FedEx | 0.99 | 0.84 | 0.81 |
-| Heineken | 0.80 | 0.88 | 0.88 |
-| Pepsi | 0.79 | 0.88 | 0.68 |
-| Starbucks | 0.98 | 0.90 | 0.88 |
-| UPS   | 0.92 | 0.95 | 0.93 |
+| Adidas| 0.79 | 0.67 | 0.63 |
+| Apple | 0.92 | 0.79 | 0.66 |
+| BMW   | 0.95 | 0.90 | 0.85 |
+| Coca cola | 0.73 | 0.85 | 0.76 |
+| DHL   | 0.96 | 0.96 | 0.83 |
+| FedEx | 0.99 | 0.90 | 0.89 |
+| Heineken | 0.80 | 0.89 | 0.85 |
+| Pepsi | 0.79 | 0.90 | 0.70 |
+| Starbucks | 0.98 | 0.98 | 0.98 |
+| UPS   | 0.92 | 0.93 | 0.86 |
 
 **Table 3 - Comparison of F1 score per class across models**
 
