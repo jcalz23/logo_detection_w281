@@ -365,17 +365,17 @@ Our implementation of these non-learned features can be found in [general_featur
 
 
 ## Mixed Models from Non-Learned Features
-With the non-learned features described above, we fit a set of models on each of three feature sets: BoW SIFT only, GFE only (shape, color texture), and the combination of BoW SIFT and GFE. The goal of this exercise is to understand how effective each of the feature sets are alone, and if any performance lift is achieved by training on them jointly. 
+With the non-learned features described above, we fit a set of models on each of three feature sets: BoW SIFT only, GFE only (shape, color texture), and the combination of BoW SIFT and GFE. The goal of this exercise is to understand how effective are each of the feature sets, and if any performance lift is achieved by mixing them. 
 
-For each feature set explored, we selected Support Vector Machine algorithm for classification based on Romberg et al work. The validation set was used to tune the hyperparameters of each model. The model configurations are displayed in Table 1 below.
+For each feature set explored, we selected Support Vector Machine algorithm for classification based on Romberg et al. work. The validation set was used to tune the hyperparameters of each model. The model configurations are displayed in Table 2 below.
 <p align = "center">
 <img src = "./images/gfe_model_descriptions.png" >
 </p>
 <p align = "center">
-Table 1 - Top Model Configuration per Feature Set
+Table 2 - Top Model Configuration per Feature Set
 </p>
 
-The implementation and evaluation of each model in Table 1 can be found in [gfe_modeling.ipynb](./gfe_modeling.ipynb). The results of each model are displayed and discussed in the results section.
+The implementation and evaluation of each model in Table 2 can be found in [gfe_modeling.ipynb](./gfe_modeling.ipynb). The results of each model are displayed and discussed in the results section.
 
 
 ## YOLO
