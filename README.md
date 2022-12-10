@@ -413,10 +413,10 @@ The step by step implementation of YOLO can be found in [Yolov5.ipynb](./Yolov5.
 
 
 # Results and Discussion
-In this section, we first summarize and compare the performance of each model form as defined above. Next, we discuss the performance of each model form in greater detail by looking at class-level performance. Finally, we examine specific images that were not predicted correctly by the top performing model to better understand the model’s faults and areas of potential improvement.
+In this section, we summarize and compare the performance of different models. We also discuss the performance of each model in greater detail using class-level metrics. In the end, we examine specific images that were not predicted correctly by the top performing model to better understand the model’s issue and areas of potential improvement.
 
 ## Overall Performance
-Table 2 compares the performance of the YOLO model to the different GFE models trained on non-learned features.
+Table 3 compares the performance of the YOLO model to the different GFE models trained on non-learned features.
 
 <center>
 
@@ -428,7 +428,7 @@ Table 2 compares the performance of the YOLO model to the different GFE models t
 |BoW SIFT        | SVM       |BoW SIFT                         |   0.80   |   0.80    |  0.81  | 0.80 |
 |GFE Model       | SVM       |Shape, Color, Texture            |   0.79   |   0.75    |  0.74  | 0.74 |
 
-**Table 2 - Comparison of model performance**
+**Table 3 - Comparison of model performance**
 ***YOLO models use mAP@0.5 for accuracy metric**
 
 </center>
@@ -462,9 +462,9 @@ In multi-class classification problems, it is crucial to understand the model pe
 
 Looking across logo classes and models, there are some classes that each model does well on, and some with which each model struggles. Each model has a strong F1 score for Starbucks, UPS and Fedex classes; UPS and Fedex are both text based logos with distinct edges, while Starbucks is highly distinct and likely easier for models to differentiate. Adidas and Coca Cola have F1-scores mostly below or near 0.8 for each model; this could be due to the fact that these two brands have greater diversity in the appearance of logos across different images and have larger homogeneous area.
 
-Comparing YOLO to the Mixed GFE & Sift model, YOLO performs markedly better for Apple and BMW, and markedly worse for Coca Cola, Heineken and Pepsi. One explanation could be that the former classes are often found on flat surfaces, and the latter are all drinks which are typically found on curved surfaces. Additionally, research has shown that YOLO models perform well on smaller objects and in low contrast environments, which apply closely to Apple and BMW [8].
+Comparing YOLO to the Mixed GFE & SIFT models, YOLO performs markedly better for Apple and BMW, and markedly worse for Coca Cola, Heineken and Pepsi. One explanation could be that the former classes are often found on flat surfaces, and the latter are all drinks which are typically found on curved surfaces. Additionally, research has shown that YOLO models perform well on smaller objects and in low contrast environments, which apply closely to Apple and BMW [8].
 
-Comparing the Mixed GFE & SIFT model to the SIFT model, the Mixed model provides strong lift in each of the classes with which the BoW SIFT struggles most: Apple, BMW, and Pepsi. One explanation could be that each of these logos have few corners and thus SIFT might struggle to consistently identify keypoints. The color, shape and texture features add more signal when detecting keypoints in the logos that are less consistent. The remainder of classes are roughly comparable, with the Mixed model slightly outperforming the SIFT model.
+Comparing Mixed GFE & SIFT model to standalone SIFT model, the Mixed model provides a strong lift in each of the classes where BoW SIFT struggles: Apple, BMW, and Pepsi. One explanation could be that each of these logos have few corners and thus SIFT might struggle to consistently identify keypoints. The color, shape and texture features add more signal when detecting keypoints in the logos that are less consistent. The remainder of classes are roughly comparable, with the Mixed model slightly outperforming the SIFT model.
 
 ## Image-Level Error Analysis
 For the top performing YOLO V7 model, we picked out several examples of misclassified test images to further understand the limitations and weaknesses of the model. This exercise showed that the YOLO model made mistakes more frequently in cases with small, blurry, and occluded images as well as cases of unusual logos that deviate from the common case (such as the Heineken pint image).
@@ -483,7 +483,7 @@ For the top performing YOLO V7 model, we picked out several examples of misclass
         	    Undetected PEPSI with blur
       	    </td>
             <td style="padding:10px">
-            	Detected partial Starbucks
+            	Detected an occluded Starbucks
             </td>
             <td style="padding:10px">
             	Shouldn't have detected as Coca-Cola
@@ -539,7 +539,7 @@ For the top performing YOLO V7 model, we picked out several examples of misclass
 
 
 ## State of the Art Comparison
-As mentioned in the Data section, our models are developed on a subset of classes in the Logos32+ dataset (due to compute constraints) and also do not include a background class. Though not an apples-to-apples comparison due to dataset differences, Figures 7 and 8 place our models in the context of the literature that inspired them.
+As discussed in the Dataset section, our models are developed on a subset of classes from the Logos32+ dataset (due to compute constraints) and also do not include a background class. Though not an apples-to-apples comparison due to the dataset differences, the below Figures 7 and 8 show our models in comparision with the models in the literature that inspired them.
 
 <p align = "center">
 <img src = "./images/sota_bow_sift_comparison.png" >
@@ -555,7 +555,7 @@ Fig. 7 - Comparison with BoW SIFT in Romberg et al. [3]
 Fig. 8 - Comparison with CNN in Bianco et al. [1]
 </p>
 
-The BoW SIFT model fit on FlickrLogos-32 dataset in Romberg et al. achieves much higher performance than our BoW SIFT fit on the subset of classes in Logos32+. The CNN model fit on FlickrLogos-32 dataset in Bianco et al. only slightly outperforms our YOLO model fit on the subset of classes in Logos32+ in terms of precision. A direct comparison is challenging without fitting our models on the same data; however, we hypothesize that differences can be primarily attributed to our model working with a subset of classes, not including a background class, and not utilizing data augmentation. 
+The BoW SIFT model fit on FlickrLogos-32 dataset in Romberg et al. shows higher performance than our BoW SIFT fit on the subset of classes in Logos32+ and the Mixed GFE & SIFT model. The CNN model fit on FlickrLogos-32 dataset in Bianco et al. only slightly outperforms our YOLO model fit on the subset of classes in Logos32+ in terms of precision. A direct comparison is challenging without fitting our models on similar data, preprocessing and augmentation. We hypothesize that the differences can be primarily attributed to our models working with a subset of classes, not including a background class, and not utilizing similar data augmentation. 
 
 
 # Challenges and Next Steps
@@ -574,7 +574,7 @@ As an extension to this project, we have identified a few next steps:
 * Perform data augmentation for the training similar to the Bianco et al. paper[1]
 * Use 2 layers in SIFT with 160 dimension keypoint descriptors
 * Increase complexity of the Mixed model by introducing additional features into the model
-* Execute Yolo algorithm on the dataset by enabling data augmentation options 
+* Execute YOLO algorithm on the dataset by enabling data augmentation options 
 
 
 # Appendix 1 : Additional YOLO metrics
@@ -623,7 +623,7 @@ YOLOv7 Test R Curve
 
 </p>
 
-
+If any of the notebook links or images are not accessible in the report, please refer to the GitHub link for the materials. [Link](https://github.com/jcalz23/logo_detection_w281/)
 # References 
 
 
