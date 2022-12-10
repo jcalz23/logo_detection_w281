@@ -623,7 +623,8 @@ YOLOv7 Test R Curve
 
 </p>
 
-If any of the notebook links or images are not accessible in the report, please refer to the GitHub link for the materials. [Link](https://github.com/jcalz23/logo_detection_w281/)
+If any of the notebooks, links or images are not accessible in the report, please go to the GitHub repo shown and refer to the materials. https://github.com/jcalz23/logo_detection_w281/
+
 # References 
 
 
