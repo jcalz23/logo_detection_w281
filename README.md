@@ -2,7 +2,7 @@
 
 <!-- Add banner here -->
 
-# 281 - Final Project Report : Logo Detection
+# Logo Detection Project Report : 
 
 <!-- ![](./all_logos.png  {width=40px height=400px} ) -->
 <img src="./images/all_logos.png" width="550" height="300" >
@@ -11,7 +11,7 @@ Authors: Luis Chion (lmchion@berkeley.edu), Eric Liu (eliu390@berkeley.edu), Vis
 
 Instructor: Allen Y. Yang
 
-Date: 12/09/2022
+Date: 12/09/2022 (MIDS 281 - Fall 2022)
 
 ![image](https://user-images.githubusercontent.com/76463802/206735484-282bc139-58c8-4718-a745-e728c014d185.png)
 
