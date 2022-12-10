@@ -379,13 +379,13 @@ The implementation and evaluation of each model in Table 2 can be found in [gfe_
 
 
 ## YOLO
-YOLO is a deep learning algo for real-time object detection.  It is capable not only to provide the exact location of an object in an image (bounding boxes) but also able to identify it (classification).  It uses a combination of approaches such as fast R-CNN, Retina-Net and Single-Shot MultiBox DEtector (SSD).  YOLO has become the standard in object recognition due to its speed, detection accuracy, good generalization and the fact that is open-source.
+YOLO is a deep learning algorithm for real-time object detection.  It is capable of not only providing the location of an object in an image (bounding boxes) but also identify the object (classification).  It uses a combination of approaches such as fast R-CNN, Retina-Net and Single-Shot MultiBox Detector (SSD).  YOLO has become the standard in object recognition due to its speed, detection accuracy, good generalization and the fact that it is open-source.
 
-In preparation for the training, we loaded 3,062 groundtruth images into Roboflow using the same train test validation partition (70%-15%-15%). After uploading, images were auto oriented so images are display using the correct EXIF orientation stored in the metadata.  Also, images are resized to 640x640 pixels to improve training performance.  No further data augmentations were applied.
+In preparation for the training, we loaded 3,062 groundtruth images into Roboflow using the same train test validation partition (70%-15%-15%). After uploading, images were auto-oriented using the correct EXIF orientation stored in the metadata.  Also, images are resized to 640x640 pixels to improve training performance.  No further data augmentations were applied.
 
-For training YOLO, we used a batch size of 16 and we ran 300 epochs as recommended in  [Tips for Best Training Results Documentation](https://docs.ultralytics.com/tutorials/training-tips-best-results/).  For testing, we set our confidence and IOU threshold equal to 50%. 
+For training YOLO, we used a batch size of 16 and with 300 epochs as recommended in  [Tips for Best Training Results Documentation](https://docs.ultralytics.com/tutorials/training-tips-best-results/).  For testing, we set our confidence and IOU threshold equal to 50%. 
 
-<!-- Here are the results of YOLOv7 Test dataset:
+<!-- Here are the results of YOLOv7 on Test dataset:
 <center>
 
 |  Class        |  Labels     |      P    |       R  |    mAP@.5 | mAP@.5:.95|
@@ -409,7 +409,7 @@ For training YOLO, we used a batch size of 16 and we ran 300 epochs as recommend
 
 
 
-The step by step implementation of YOLO can be found in [Yolov5.ipynb](./Yolov5.ipynb). These notebooks came from [Roboflow's Blog: How to Train YOLOv7 on a Custom Dataset](https://blog.roboflow.com/yolov7-custom-dataset-training-tutorial/).  It shows step by step how to download the dataset, custom train and run evaluations.
+The step by step implementation of YOLO can be found in [Yolov5.ipynb](./Yolov5.ipynb). These notebooks are created from [Roboflow's Blog: How to Train YOLOv7 on a Custom Dataset](https://blog.roboflow.com/yolov7-custom-dataset-training-tutorial/).  It shows step by step how to download the dataset, custom train and run evaluations.
 
 
 # Results and Discussion
