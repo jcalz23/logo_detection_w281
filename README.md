@@ -285,11 +285,11 @@ Our step by step implementation of SIFT and classification algorithms on the log
 
 ## General Feature Extraction (GFE)
 
-Along with the BoW SIFT features, additional non-learned features were extracted from the image bounding boxes, these include: shape, color and texture feautures. The motivation is to understand if model performance improves when fit on BoW SIFT and additional features.  
+Along with the BoW SIFT features, additional non-learned features were extracted from the image bounding boxes, these include: Shape, Color and Texture feautures. The motivation is to understand if model performance improves when fit on BoW SIFT and additional features.  
 
 ### Shape 
 
-Image moments are used to describe the shape of an object in an image.  These moments are described in the 1962's Ming-Kuei paper [[3]](#3) and capture information like the are of the object, the centroid and the orientation.  Hu moments should not be used in situations where there is noise, occlusion or a lack of clean segmentation since it is very hard to get a dependable and repeatable centroid. Hu moments are invariant to translation, scale, rotation and reflection.  To calculate Hu moments, we first used Canny to calculate the edges of a log with threshold 1 and 2 set to 100 and 200 respectively.  After, Hu moments are calculated as follows:
+Image moments are used to describe the shape of an object in an image.  These moments are described in the 1962's Ming-Kuei paper [[3]](#3) and capture information like the area of the object, the centroid and the orientation.  Hu moments should not be used in situations where there is noise, occlusion or a lack of clean segmentation since it is very hard to get a dependable and repeatable centroid. Hu moments are invariant to translation, scale, rotation and reflection.  To calculate Hu moments, we first used Canny to calculate the edges of a log with threshold 1 and 2 set to 100 and 200 respectively.  After, Hu moments are calculated as follows:
 
 The regular moment of a shape in a binary image is defined by:
 
@@ -341,7 +341,7 @@ where the color of the pixel (*x, y*) is represented by *f<sub>k</sub>(x, y)*. F
 
 
 ### Texture
-Texture is another important property of a logo; while it does not uniquely describe a logo, it may help differentiate textured logos from non-textures ones. For example, FedEx logos are typically found in print (plastic) or on vehicle decals (metal), and Adidas logos are frequently found on clothing and shoes (cotton, leather).
+Texture is another important property of a logo; while it does not uniquely describe a logo, it may help differentiate textured logos from non-texture ones. For example, FedEx logos are typically found in print (plastic) or on vehicle decals (metal), and Adidas logos are frequently found on clothing and shoes (cotton and leather).
 
 A statistical approach to generating texture features uses a gray level co-occurrence matrix, which is a histogram of co-occurring grayscale values (i, j) at a given distance d (defined in polar coordinates) over an image. The co-occurrence matrix C(i, j) is defined by
 <p align = "center">
@@ -352,7 +352,7 @@ A statistical approach to generating texture features uses a gray level co-occur
 where card indicates the number of elements in the set. 
 
 
-A set of features can be extracted from the co-occurrence matrix to reduce the dimensionality of the feature space. Figure 3 captures the set of features extracted from C(i,j)
+<br/>A set of features can be extracted from the co-occurrence matrix to reduce the dimensionality of the feature space. Figure 3 captures the set of features extracted from C(i,j)
 
 <p align = "center">
 <img src = "./images/texture_features.png" width="50%" height="50%">
@@ -361,7 +361,7 @@ A set of features can be extracted from the co-occurrence matrix to reduce the d
 Fig.3 - Formulas for Texture Features from Co-Occurrence Matrix (from **CITE PAPER**) 
 </p>
 
-The implementation of these non-learned features can be found in [general_feature_extraction.ipynb](./general_feature_extraction.ipynb).
+Our implementation of these non-learned features can be found in [general_feature_extraction.ipynb](./general_feature_extraction.ipynb).
 
 
 ## Mixed Models from Non-Learned Features
