@@ -2,7 +2,7 @@
 
 <!-- Add banner here -->
 
-# W281 - Final Project : Logo Detection
+# 281 - Final Project Report : Logo Detection
 
 <!-- ![](./all_logos.png  {width=40px height=400px} ) -->
 <img src="./images/all_logos.png" width="550" height="300" >
